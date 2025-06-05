@@ -1,9 +1,11 @@
 import { Box, Flex, Text, Spacer, Link, Heading, Image } from '@chakra-ui/react'
 
+
 const navigation = [
   { name: 'Cuenta', href: '/cuenta' },
   { name: 'Transferencia', href: '/transferencia' },
   { name: 'Retiro', href: '/retiro' },
+  { name: 'Facturas', href: '/factura'}
 ]
 
 const logoUrl = 'https://static.vecteezy.com/system/resources/previews/013/948/727/non_2x/bank-icon-logo-design-vector.jpg'
