@@ -1,17 +1,25 @@
 import { Flex, Box, Text, VStack, Stack,Heading, Divider,Card,CardBody, CardFooter, ButtonGroup,Button, useBoolean,HStack, Select } from "@chakra-ui/react";
 import { FaEye, FaBitcoin,FaEyeSlash, } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAccountOfUser } from "../../service/api";
 
 export const InfoCuenta = () => {
     const [flag,setFlag] = useBoolean()
     const [monedaDestino, setMonedaDestino] = useState("");
     const [saldoConvertido, setSaldoConvertido] = useState(null);
-    const saldo = 1000;
-    const puntos = 255;
-    const tipo = "Monetaria";
-    const NumeroCuenta = 'NB-3476829018'
-    const usuario = 'Chepe el Mas capito'
+    const [cuenta, setCuenta] = useState(null);
+    const idCuenta = '6842f2ebcf01beca4e14db0c';
+    
+    useEffect(()=> {
+      const fetchAccount = async () => {
+        const accout = await getAccountOfUser(idCuenta);
+        setCuenta(accout);
+        console.log(accout);
+      };
+
+      fetchAccount();
+    },[])
 
     const apiKey = '301233cc6b9347c2b98bdb3bbb59cfb9';
 
@@ -53,6 +61,7 @@ export const InfoCuenta = () => {
         if(usd !== null){
             const resultadoFinal = await convertirSaldo(monedaDestino, usd);
              console.log(`${saldo} GTQ equivale a ${resultadoFinal} ${monedaDestino}`);
+             return resultadoFinal;
         }else {
             console.log("No se pudo convertir GTQ a USD.");
         }
@@ -61,8 +70,12 @@ export const InfoCuenta = () => {
     const handleMonedaChange = (e) => {
         const monedaSeleccionada = e.target.value;
         setMonedaDestino(monedaSeleccionada);
-        convertirGTQaOtraMoneda(saldo, monedaSeleccionada);
+        setSaldoConvertido(convertirGTQaOtraMoneda(cuenta.balance, monedaSeleccionada));
     };
+
+    if(!cuenta){
+      return <Text>Cargando información de la cuenta...</Text>;
+    }
 
    return (
         <Flex minH="100vh" direction="column" bg="gray.50" p={8}>
@@ -77,27 +90,22 @@ export const InfoCuenta = () => {
             <CardBody>
               <Stack mt="6" spacing="3">
                 <Heading size="md">
-                  Cuenta {tipo} {NumeroCuenta}
+                  Cuenta {cuenta.typeAccount} NB-{cuenta.noAccount}
                 </Heading>
-                <Text>{usuario}</Text>
+                <Text>{cuenta.keeperUser.name}</Text>
                 <Text>Mi Saldo</Text>
                 <Text color="black.600" fontSize="2xl">
-                  {!flag ? "********" : `Q.${saldo}`}
+                  {!flag ? "********" : `Q.${cuenta.balance}`}
                   <Button onClick={setFlag.toggle} m={3}>
                     {!flag ? <FaEye /> : <FaEyeSlash />}
                   </Button>
                 </Text>
 
                 {/* Muestra siempre el saldo convertido si existe */}
-                {saldoConvertido && (
-                  <Text color="green.600" fontWeight="bold" fontSize="lg">
-                    ≈ {saldoConvertido}
-                  </Text>
-                )}
                 <HStack>
                   <FaBitcoin />
                   <Text m={2}>Puntos: </Text>
-                  <Text>{puntos}</Text>
+                  <Text>{cuenta.points}</Text>
                 </HStack>
               </Stack>
             </CardBody>
@@ -129,10 +137,15 @@ export const InfoCuenta = () => {
             >
               <option value="USD">USD - Dólar</option>
               <option value="EUR">EUR - Euro</option>
-              <option value="COP">COP - Peso Colombiano</option>
               <option value="MXN">MXN - Peso Mexicano</option>
               <option value="JPY">JPY - Yen Japonés</option>
             </Select>
+          </Box>
+          <Box>
+            <Text>Saldo Convetido: </Text>
+            <Text color="green.600" fontWeight="bold" fontSize="lg">
+               ≈ {saldoConvertido}
+            </Text>
           </Box>
         </HStack>
       </Flex>
