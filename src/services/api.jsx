@@ -21,7 +21,7 @@ apiBanc.interceptors.request.use(
 
 export const login = async (data) => {
     try {
-        return await apiBanc.post('/auth/login', data);
+        return await apiBanc.post('/auth/login', data)
     } catch (e) {
         return {
             error: true,
@@ -30,13 +30,10 @@ export const login = async (data) => {
     }
 }
 
-export const register = async(data) =>{
+export const register = async(data) => {
     try {
-        return await apiBanc.post('/auth/register', data);
-    } catch (e) {
-        return{
-            error: true,
-            e
-        }
+        return await apiBanc.post('/auth/register', data)
+    } catch (error) {
+        
     }
 }

@@ -3,6 +3,4 @@ export * from './validatePassword.jsx';
 export * from './validateConfirPassword.jsx';
 export * from './validateUsername.jsx';
 export * from './validateNotEmpty.jsx';
-export * from './validateDpi.jsx';
-export * from './validatePhone.jsx';
 
