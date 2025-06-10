@@ -12,6 +12,21 @@ const logoUrl = 'https://static.vecteezy.com/system/resources/previews/013/948/7
 const userIconUrl = 'https://cdn-icons-png.flaticon.com/512/456/456212.png'
 
 export const Navbar = () => {
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user && user.role === 'ADMIN_ROLE') {
+      setIsAdmin(true)
+    }
+  }, [])
+
+  const navigation = [
+    { name: 'Cuentasss', href: '/cuenta' },
+    { name: 'Transferencia', href: '/transferencia' },
+    ...(isAdmin ? [{ name: 'Register', href: '/register' }] : [])
+  ]
+
   return (
     <Box
       as="header"
