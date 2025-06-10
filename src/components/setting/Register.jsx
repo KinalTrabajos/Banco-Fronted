@@ -18,7 +18,7 @@ import { useRegister } from "../../shared/hooks";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../setting/Input";
 
-const Register = () => {
+export const Register = () => {
     const navigate = useNavigate();
     const { register, isLoading, isSuccess } = useRegister();
 
@@ -54,6 +54,8 @@ const Register = () => {
             case "name":
             case "username":
             case "direction":
+                isValid = value.length > 9;
+                break;
             case "phone":
                 isValid = value.length >= 3;
                 break;
