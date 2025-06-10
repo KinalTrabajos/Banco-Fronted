@@ -52,7 +52,11 @@ export const Register = () => {
         let isValid = false;
         switch (field) {
             case "name":
+                isValid = value.length >= 3;
+                break;
             case "username":
+                isValid = value.length >= 3;
+                break;
             case "direction":
                 isValid = value.length > 9;
                 break;

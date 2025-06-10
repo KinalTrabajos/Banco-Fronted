@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import {
     FormControl,
     FormLabel,
@@ -8,7 +6,6 @@ import {
     FormErrorMessage,
 } from "@chakra-ui/react";
 
->>>>>>> f-rosas
 export const Input = ({
     field,
     label,
