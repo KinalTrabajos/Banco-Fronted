@@ -31,9 +31,15 @@ export const login = async (data) => {
 }
 
 export const register = async(data) => {
-    try {
+    console.log(data);
+    
+    try {        
         return await apiBanc.post('/auth/register', data)
     } catch (error) {
+        console.log(error);
         
+        return {
+            error: true,
+        }
     }
 }

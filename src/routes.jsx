@@ -1,6 +1,6 @@
 import {Login} from "./components/setting/Login" 
 import { DashboardPage } from "./pages/Dashboard";
-import { Register } from "./components/setting/Register";
+import {Register} from "./components/setting/Register";
 
 import { PrivateRoute } from "./components/setting/PrivateRoute";
 
