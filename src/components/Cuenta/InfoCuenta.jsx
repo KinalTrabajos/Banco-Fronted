@@ -2,18 +2,16 @@ import { Flex, Box, Text, VStack, Stack,Heading, Divider,Card,CardBody, CardFoot
 import { FaEye, FaBitcoin,FaEyeSlash, } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useEffect, useState } from "react";
-import { getAccountOfUser } from "../../service/api";
+import { getAccountOfUser } from "../../services/api.jsx";
 
-export const InfoCuenta = () => {
+export const InfoCuenta = ({idUser}) => {
     const [flag,setFlag] = useBoolean()
     const [monedaDestino, setMonedaDestino] = useState("");
     const [saldoConvertido, setSaldoConvertido] = useState(null);
     const [cuenta, setCuenta] = useState(null);
-    const idCuenta = '6842f2ebcf01beca4e14db0c';
-    
     useEffect(()=> {
       const fetchAccount = async () => {
-        const accout = await getAccountOfUser(idCuenta);
+        const accout = await getAccountOfUser({id: idUser});
         setCuenta(accout);
         console.log(accout);
       };

@@ -1,13 +1,15 @@
 import {Login} from "./components/setting/Login" 
 import { DashboardPage } from "./pages/Dashboard";
 import { Register } from "./components/setting/Register";
+import {CuentaPage} from './pages/Cuenta/CuentasPage'
 
 import { PrivateRoute } from "./components/setting/PrivateRoute";
 
 const routes = [
   { path: "/", element: <Login/> },           
   { path: "/dashboardPage", element: <PrivateRoute><DashboardPage/></PrivateRoute>}, 
-  { path: "/register", element: <PrivateRoute><Register/></PrivateRoute> } 
+  { path: "/register", element: <PrivateRoute><Register/></PrivateRoute> },
+  { path: "/cuenta", element: <CuentaPage/>} 
 ]
 
 export default routes

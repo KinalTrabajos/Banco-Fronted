@@ -37,3 +37,20 @@ export const register = async(data) => {
         
     }
 }
+
+export const getAccountOfUser = async (data) => {
+    try {
+        const response = await apiBanc.get(`/account/searchAccount`,{
+            params:{
+                noAccount: data.noAccount,
+                id: data.id
+            }
+        });
+        return response.data.account
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}

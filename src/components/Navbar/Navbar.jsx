@@ -1,5 +1,5 @@
 import { Box, Flex, Text, Spacer, Link, Heading, Image } from '@chakra-ui/react'
-
+import { useState, useEffect } from 'react'
 
 const navigation = [
   { name: 'Cuenta', href: '/cuenta' },
