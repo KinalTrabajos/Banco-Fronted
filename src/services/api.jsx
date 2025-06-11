@@ -33,8 +33,11 @@ export const login = async (data) => {
 export const register = async(data) => {
     try {
         return await apiBanc.post('/auth/register', data)
-    } catch (error) {
-        
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
     }
 }
 
@@ -47,6 +50,17 @@ export const getAccountOfUser = async (data) => {
             }
         });
         return response.data.account
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
+export const getAllAccounts = async () => {
+    try {
+        return await apiBanc.get('/account/getAccount');
     } catch (e) {
         return {
             error: true,

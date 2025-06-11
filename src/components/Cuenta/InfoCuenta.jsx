@@ -2,18 +2,17 @@ import { Flex, Box, Text, VStack, Stack,Heading, Divider,Card,CardBody, CardFoot
 import { FaEye, FaBitcoin,FaEyeSlash, } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useEffect, useState } from "react";
-import { getAccountOfUser } from "../../services/api.jsx";
+import { useAccountDetails } from "../../shared/hooks/useAccountDetails";
 
 export const InfoCuenta = ({idUser}) => {
     const [flag,setFlag] = useBoolean()
     const [monedaDestino, setMonedaDestino] = useState("");
     const [saldoConvertido, setSaldoConvertido] = useState(null);
-    const [cuenta, setCuenta] = useState(null);
+    const {getAccountOfUser, accountDetails} = useAccountDetails();
+
     useEffect(()=> {
       const fetchAccount = async () => {
-        const accout = await getAccountOfUser({id: idUser});
-        setCuenta(accout);
-        console.log(accout);
+        await getAccountOfUser({id: idUser});
       };
 
       fetchAccount();
@@ -68,10 +67,10 @@ export const InfoCuenta = ({idUser}) => {
     const handleMonedaChange = (e) => {
         const monedaSeleccionada = e.target.value;
         setMonedaDestino(monedaSeleccionada);
-        setSaldoConvertido(convertirGTQaOtraMoneda(cuenta.balance, monedaSeleccionada));
+        setSaldoConvertido(convertirGTQaOtraMoneda(accountDetails.balance, monedaSeleccionada));
     };
 
-    if(!cuenta){
+    if(!accountDetails){
       return <Text>Cargando información de la cuenta...</Text>;
     }
 
@@ -88,12 +87,12 @@ export const InfoCuenta = ({idUser}) => {
             <CardBody>
               <Stack mt="6" spacing="3">
                 <Heading size="md">
-                  Cuenta {cuenta.typeAccount} NB-{cuenta.noAccount}
+                  Cuenta {accountDetails.typeAccount} NB-{accountDetails.noAccount}
                 </Heading>
-                <Text>{cuenta.keeperUser.name}</Text>
+                <Text>{accountDetails?.keeperUser?.name}</Text>
                 <Text>Mi Saldo</Text>
                 <Text color="black.600" fontSize="2xl">
-                  {!flag ? "********" : `Q.${cuenta.balance}`}
+                  {!flag ? "********" : `Q.${accountDetails.balance}`}
                   <Button onClick={setFlag.toggle} m={3}>
                     {!flag ? <FaEye /> : <FaEyeSlash />}
                   </Button>
@@ -103,7 +102,7 @@ export const InfoCuenta = ({idUser}) => {
                 <HStack>
                   <FaBitcoin />
                   <Text m={2}>Puntos: </Text>
-                  <Text>{cuenta.points}</Text>
+                  <Text>{accountDetails.points}</Text>
                 </HStack>
               </Stack>
             </CardBody>
