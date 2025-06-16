@@ -40,3 +40,36 @@ export const register = async(data) => {
         }
     }
 }
+
+export const viewUser = async(id) => {
+    try {
+        return await apiBanc.get(`/users/viewUserById/${id}`)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const updateUser = async(id,data) => {
+    try{
+        return await apiBanc.put(`/users/updateUser/${id}`,data)
+    }catch(e){
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const updatePassword = async(id,data) => {
+    try{
+        return await apiBanc.put(`/users/updatePassword/${id}`, data)
+    }catch(e){
+        return{
+            error: true,
+            e
+        }
+    }
+}

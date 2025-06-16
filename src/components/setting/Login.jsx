@@ -19,7 +19,7 @@ import {
 import { useLogin } from "../../shared/hooks";
 
 export const Login = ({ switchAuthHandler }) => {
-  const { login, isLoading } = useLogin();
+  const { login, isLoading } = useLogin()
 
   const [formState, setFormState] = useState({
     email: {

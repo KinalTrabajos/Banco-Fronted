@@ -1,5 +1,5 @@
 export const validatePassword = (password) => {
-    const regex = /^\S{10,20}$/;
+    const regex = /^\S{6,20}$/;
     return regex.test(password);
 }
 
