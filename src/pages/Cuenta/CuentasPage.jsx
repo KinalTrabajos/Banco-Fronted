@@ -31,7 +31,7 @@ export const CuentaPage = () => {
         return(
             <Flex direction="column" minH="100vh" bg="gray.50">
                 <Navbar/>
-                    <InfoCuenta idUser={user.uid}/>
+                    <InfoCuenta idUser={user.id}/>
                     
                 <Footer/>
             </Flex>

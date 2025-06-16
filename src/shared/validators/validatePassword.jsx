@@ -3,4 +3,4 @@ export const validatePassword = (password) => {
     return regex.test(password);
 }
 
-export const validatePasswordMessage = "La contraseña debe tener entre 6 y 20 caracteres y no debe contener espacios.";
+export const validatePasswordMessage = "La contraseña debe tener entre 10 y 20 caracteres y no debe contener espacios.";
