@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { error } from 'console';
+
 
 const apiBanc = axios.create({
     baseURL: "http://localhost:8080/BancoSystem/v1",
@@ -97,6 +97,28 @@ export const updatePassword = async(id,data) => {
         return await apiBanc.put(`/users/updatePassword/${id}`, data)
     }catch(e){
         return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getBillByUser = async(id) => {
+    try {
+        return await apiBanc.get(`/bill/${id}`)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getAllBills = async () => {
+    try {
+        return await apiBanc.get(`/bill/`);
+    } catch (e) {
+        return {
             error: true,
             e
         }

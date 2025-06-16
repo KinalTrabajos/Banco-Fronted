@@ -25,7 +25,7 @@ export const Navbar = () => {
   }, []);
 
   const navigation = [
-    { name: "Cuentasss", href: "/cuenta" },
+    { name: "Cuentas", href: "/cuenta" },
     { name: "Transferencia", href: "/transferencia" },
     { name: "Facturas", href: "/facturas"},
     ...(isAdmin ? [{ name: "Register", href: "/register" }] : []),

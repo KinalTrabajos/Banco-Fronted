@@ -16,7 +16,7 @@ export const CuentaPage = () => {
     useEffect(() => {
         const userLocal = JSON.parse(localStorage.getItem('user'));
         setUser(userLocal);
-      }, [])
+    }, [])
 
       useEffect(() => {
         if (user?.role === "ADMIN_ROLE") {

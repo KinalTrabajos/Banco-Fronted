@@ -9,7 +9,7 @@ const routes = [
   { path: "/", element: <Login/> },           
   { path: "/dashboardPage", element: <PrivateRoute><DashboardPage/></PrivateRoute>}, 
   { path: "/register", element: <PrivateRoute><Register/></PrivateRoute> },
-  { path: "/cuenta", element: <CuentaPage/>} 
+  { path: "/cuenta", element: <CuentaPage/>},
   { path: "/user", element: <PrivateRoute><UserPage/></PrivateRoute> }
 ]
 
