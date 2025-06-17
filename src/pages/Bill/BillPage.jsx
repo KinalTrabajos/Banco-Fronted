@@ -24,7 +24,26 @@ export const  BillPage = () => {
         }
     },[user])
 
+    console.log(allBills);
     if(user.role === 'USER_ROLE'){
+        return(
+            <Flex direction="column" minH="100vh">
+                <Navbar/>
+                    <SimpleGrid columns={[1,2,3]} spacing={6} p={3}>
+                        {allBills.map((bill) => (
+                            <CardBill
+                                key={bill._id}
+                                account={bill.account}
+                                user={bill.user}
+                                numeroFactura={bill._id}
+                                total={bill.total}
+                            />
+                        ))}
+                    </SimpleGrid>
+                <Footer/>
+            </Flex>
+        )
+    }else if(user.role === 'ADMIN_ROLE'){
         return(
             <Flex direction="column" minH="100vh">
                 <Navbar/>
@@ -39,14 +58,6 @@ export const  BillPage = () => {
                             />
                         ))}
                     </SimpleGrid>
-                <Footer/>
-            </Flex>
-        )
-    }else if(user.role === 'ADMIN_ROLE'){
-        return(
-            <Flex direction="column" minH="100vh">
-                <Navbar/>
-                    
                 <Footer/>
             </Flex>
         )

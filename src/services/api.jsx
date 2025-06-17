@@ -124,3 +124,14 @@ export const getAllBills = async () => {
         }
     }
 }
+
+export const getHistoryByUser = async (id) => {
+    try {
+        return await apiBanc.get(`/history/${id}`)
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}

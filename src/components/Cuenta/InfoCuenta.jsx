@@ -3,12 +3,14 @@ import { FaEye, FaBitcoin,FaEyeSlash, } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { useAccountDetails } from "../../shared/hooks/useAccountDetails";
+import { useGetHistoryFromUser } from "../../shared/hooks/history/useHistoryFromUser";
 
 export const InfoCuenta = ({idUser}) => {
     const [flag,setFlag] = useBoolean()
     const [monedaDestino, setMonedaDestino] = useState("");
     const [saldoConvertido, setSaldoConvertido] = useState(null);
     const {getAccountOfUser, accountDetails} = useAccountDetails();
+    const { historyUser, getHistoryFromUser} = useGetHistoryFromUser();
 
     useEffect(()=> {
       const fetchAccount = async () => {
