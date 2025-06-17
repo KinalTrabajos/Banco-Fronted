@@ -13,8 +13,13 @@ export const useGetAllBills = () => {
                 responseData.e?.response?.data || 'Error to search the accounts'
             )
         }else {
-            setAllAccounts(responseData.data.bills)
+            setAllBills(responseData.data.bills)
         }
-
     }
+
+    return {
+        allBills,
+        getAllBills
+    }
+
 }

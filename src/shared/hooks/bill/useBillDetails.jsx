@@ -13,7 +13,7 @@ export const useBillDetails = () => {
                 responseData.e?.response?.data || 'Error to search the account'
             )
         }else {
-            setAccountDetails(responseData.data.bills)
+            setBillDetails(responseData.data.bills)
         }
 
     }
