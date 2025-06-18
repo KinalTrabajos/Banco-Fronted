@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+
 const apiBanc = axios.create({
     baseURL: "http://localhost:8080/BancoSystem/v1",
     timeout: 5000,
@@ -41,11 +42,39 @@ export const register = async(data) => {
     }
 }
 
+export const getAccountOfUser = async (data) => {
+    try {
+        const response = await apiBanc.get(`/account/searchAccount`,{
+            params:{
+                noAccount: data.noAccount,
+                id: data.id
+            }
+        });
+        return response.data.account
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
 export const viewUser = async(id) => {
     try {
         return await apiBanc.get(`/users/viewUserById/${id}`)
     } catch (e) {
         return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getAllAccounts = async () => {
+    try {
+        return await apiBanc.get('/account/getAccount');
+    } catch (e) {
+        return {
             error: true,
             e
         }
@@ -68,6 +97,39 @@ export const updatePassword = async(id,data) => {
         return await apiBanc.put(`/users/updatePassword/${id}`, data)
     }catch(e){
         return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getBillByUser = async(id) => {
+    try {
+        return await apiBanc.get(`/bill/${id}`)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getAllBills = async () => {
+    try {
+        return await apiBanc.get(`/bill/`);
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
+export const getHistoryByUser = async (id) => {
+    try {
+        return await apiBanc.get(`/history/${id}`)
+    } catch (e) {
+        return {
             error: true,
             e
         }

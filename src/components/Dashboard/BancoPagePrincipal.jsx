@@ -4,6 +4,9 @@ import { Box, Heading, Text, Button, Stack, Image, Flex } from '@chakra-ui/react
 import { useNavigate } from 'react-router-dom'
 
 export const BancoPagePrincipal = () => {
+
+  const navigate = useNavigate();
+
   return (
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
@@ -14,7 +17,7 @@ export const BancoPagePrincipal = () => {
           <Text fontSize="lg" color="gray.600">
             Consulta tu cuenta, haz transferencias y accede a servicios financieros en segundos.
           </Text>
-          <Button colorScheme="teal" size="lg" alignSelf="center">
+          <Button colorScheme="teal" size="lg" alignSelf="center" onClick={() => navigate('/cuenta')}>
             ver su estado de cuenta
           </Button>
         </Stack>
