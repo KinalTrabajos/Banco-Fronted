@@ -73,3 +73,25 @@ export const updatePassword = async(id,data) => {
         }
     }
 }
+
+export const viewProducts = async() => {
+    try {
+        return await apiBanc.get('/products/getProducts')
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const addShoppings = async(data) => {
+    try {
+        return await apiBanc.post('/buy/',data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}

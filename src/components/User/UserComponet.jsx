@@ -31,7 +31,7 @@ export const UserComponet = () => {
   const {isOpen: isEditOpen,onOpen: onEditOpen,onClose: onEditClose,} = useDisclosure()
 
   const userData = JSON.parse(localStorage.getItem("user"));
-  const userId = userData?._id;
+  const userId = userData?.id;
 
   const { user, setUser, isLoading } = useViewUser(userId);
   const { handleUpdateUser, handleUpdatePassword, loading} = useUpdateUser(userId)

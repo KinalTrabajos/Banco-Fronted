@@ -1,0 +1,1 @@
+export {useProductsView} from "./useProductsView.jsx"

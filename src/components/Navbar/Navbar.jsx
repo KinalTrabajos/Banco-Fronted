@@ -8,7 +8,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Link as RouterLink } from "react-router-dom"; // 👈 Importa el Link de react-router-dom
+import { href, Link as RouterLink } from "react-router-dom"
 
 const logoUrl =
   "https://static.vecteezy.com/system/resources/previews/013/948/727/non_2x/bank-icon-logo-design-vector.jpg";
@@ -27,6 +27,7 @@ export const Navbar = () => {
   const navigation = [
     { name: "Cuentasss", href: "/cuenta" },
     { name: "Transferencia", href: "/transferencia" },
+    { name: "Compras", href: "/compras"},
     ...(isAdmin ? [{ name: "Register", href: "/register" }] : []),
   ];
 
