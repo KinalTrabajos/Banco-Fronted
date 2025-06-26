@@ -14,7 +14,7 @@ export const useAddShopping = () => {
  
    if (response.error) {
      return toast.error(
-       response?.e?.response?.data?.message || "Error al comprar. Intente nuevamente."
+       response?.e?.response?.data?.message || "No tiene saldo suficiente ."
      )
    }
  

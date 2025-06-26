@@ -157,3 +157,61 @@ export const addShoppings = async(data) => {
         }
     }
 }
+
+export const addShoppingsPoints = async(data) => {
+    try {
+        return await apiBanc.post('/buy/points',data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const searchProductByUser = async (data) => {
+    try {
+        return await apiBanc.post('/products/getProductsByUserId', data)
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
+
+export const addProduct = async(data) => {
+    try {
+        return await apiBanc.post(`/products/addProduct`, data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const deleteProduct = async(id) => {
+    try {
+        return await apiBanc.delete(`/products/deleteProduct/${id}`,{
+            data: { confirm: true },
+        })
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const updateProduct = async(id,data) => {
+    try {
+        return await apiBanc.put(`/products/updateProduct/${id}`,data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
