@@ -29,10 +29,9 @@ export const useRegister = () => {
 
         const { userDetails } = response.data;
 
-        localStorage.setItem("user", JSON.stringify(userDetails));
         toast.success("Usuario registrado correctamente");
 
-        navigate("/", { replace: true });
+        navigate("/DashboardPage", { replace: true });
         window.location.reload();
     };
 

@@ -52,12 +52,16 @@ export const Register = () => {
         let isValid = false;
         switch (field) {
             case "name":
+                isValid = value.length >= 3;
+                break;
             case "username":
+                isValid = value.length >= 3;
+                break;
             case "direction":
                 isValid = value.length > 9;
                 break;
             case "phone":
-                isValid = value.length >= 3;
+                isValid = value.length >= 8;
                 break;
             case "dpi":
                 isValid = /^[0-9]{13}$/.test(value);
@@ -76,7 +80,7 @@ export const Register = () => {
                 isValid = value === formState.password.value;
                 break;
             case "income":
-                isValid = !isNaN(value) && Number(value) >= 0;
+                isValid = !isNaN(value) && Number(value) >= 1;
                 break;
             default:
                 isValid = false;
@@ -132,9 +136,6 @@ export const Register = () => {
         (formState.typeAccount.value === "EMPRESARIAL" &&
             !formState.nombreEmpresa.isValid);
 
-    useEffect(() => {
-        if (isSuccess) navigate("/login");
-    }, [isSuccess, navigate]);
 
     const bgColor = useColorModeValue("white", "gray.800");
     const formBg = useColorModeValue("gray.50", "gray.700");
@@ -153,7 +154,7 @@ export const Register = () => {
             borderColor={useColorModeValue("gray.200", "gray.600")}
         >
             <Heading mb={6} textAlign="center" fontWeight="extrabold" size="xl">
-                Create Your Account
+                Crea las nuevas cuentas 
             </Heading>
 
             <form onSubmit={handleRegister}>
@@ -166,7 +167,7 @@ export const Register = () => {
                     boxShadow="md"
                 >
                     <FormControl gridColumn="span 2">
-                        <FormLabel>Account Type</FormLabel>
+                        <FormLabel>Tipos de cuentas</FormLabel>
                         <Select
                             value={formState.typeAccount.value}
                             onChange={(e) => handleInputValueChange(e.target.value, "typeAccount")}
@@ -181,7 +182,7 @@ export const Register = () => {
 
                     <Input
                         field="name"
-                        label="Name"
+                        label="Nombre"
                         value={formState.name.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -191,7 +192,7 @@ export const Register = () => {
 
                     <Input
                         field="username"
-                        label="Username"
+                        label="Nombre Usuario"
                         value={formState.username.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -212,7 +213,7 @@ export const Register = () => {
                             />
                             <Input
                                 field="work"
-                                label="Work"
+                                label="Nombre de Trabajo"
                                 value={formState.work.value}
                                 onChangeHandler={handleInputValueChange}
                                 onBlurHandler={handleInputValidationOnBlur}
@@ -236,7 +237,7 @@ export const Register = () => {
 
                     <Input
                         field="email"
-                        label="Email"
+                        label="Correo"
                         value={formState.email.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -246,18 +247,18 @@ export const Register = () => {
 
                     <Input
                         field="password"
-                        label="Password"
+                        label="Contraseña"
                         type="password"
                         value={formState.password.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
                         showErrorMessage={formState.password.showError}
-                        validationMessage="Password must be at least 6 characters"
+                        validationMessage="Password must be at least 10 characters"
                     />
 
                     <Input
                         field="passwordConfir"
-                        label="Confirm Password"
+                        label="Confirmar contraseña"
                         type="password"
                         value={formState.passwordConfir.value}
                         onChangeHandler={handleInputValueChange}
@@ -268,7 +269,7 @@ export const Register = () => {
 
                     <Input
                         field="direction"
-                        label="Address"
+                        label="dirección"
                         value={formState.direction.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -278,7 +279,7 @@ export const Register = () => {
 
                     <Input
                         field="phone"
-                        label="Phone"
+                        label="Telefono"
                         value={formState.phone.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -288,7 +289,7 @@ export const Register = () => {
 
                     <Input
                         field="income"
-                        label="Income"
+                        label="Ingresos"
                         value={formState.income.value}
                         onChangeHandler={handleInputValueChange}
                         onBlurHandler={handleInputValidationOnBlur}
@@ -312,16 +313,6 @@ export const Register = () => {
                 </SimpleGrid>
             </form>
 
-            <Text mt={4} textAlign="center" fontSize="sm" color="gray.500">
-                Already have an account?{" "}
-                <Button
-                    variant="link"
-                    colorScheme={btnColorScheme}
-                    onClick={() => navigate("/")}
-                >
-                    Login here
-                </Button>
-            </Text>
         </Box>
     );
 };
