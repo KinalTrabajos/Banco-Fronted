@@ -131,7 +131,8 @@ export const getHistoryByUser = async (id) => {
     } catch (e) {
         return {
             error: true,
-            e
-        }
+            message: e.message,
+            stack: e.stack // opcional, útil para debug
+        };
     }
 }

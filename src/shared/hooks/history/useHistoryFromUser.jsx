@@ -10,7 +10,7 @@ export const useGetHistoryFromUser = () => {
 
         if(responseData.error){
             return toast.error(
-                responseData.e?.response?.data || 'Error to search the accounts'
+                responseData.e?.response?.data || 'Error to search the history'
             )
         }else {
             setHistoryUser(responseData.data.histories)

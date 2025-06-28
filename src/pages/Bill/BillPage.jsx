@@ -1,66 +1,104 @@
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // <--- Importa useRef aquí
 import { useGetAllBills } from "../../shared/hooks/bill/useAllBills";
-import { SimpleGrid, Flex } from "@chakra-ui/react";
-import { CardBill } from "../../components/Bill/CardBill";
+import { Box, Heading, Text, Flex, Spinner } from "@chakra-ui/react";
+import { BillList } from "../../components/Bill/BillList";
+import { BillDetailModal } from "../../components/Bill/BillDetailModal";
+import { PrintableBillContent } from "../../components/Bill/PrintableBillContent";
 
-export const  BillPage = () => {
-    const [user, setUser] = useState('');
-    const { allBills, getAllBills} = useGetAllBills();
-    
+export const BillPage = () => {
+    const [user, setUser] = useState(null);
+    const { allBills, getAllBills } = useGetAllBills();
+    const [selectedBill, setSelectedBill] = useState(null);
+
+
+    const printableRef = useRef();
+
     useEffect(() => {
         const userLocal = JSON.parse(localStorage.getItem('user'));
-        setUser(userLocal);
-    },[])
+        if (userLocal) {
+            setUser(userLocal);
+        }
+    }, []);
 
     useEffect(() => {
-        if(user?.role === "ADMIN_ROLE") {
-            const fetchAccount = async () => {
-                await getAllBills();
+        if (user && user.role) {
+            const fetchBills = async () => {
+                if (user.role === "ADMIN_ROLE" || user.role === "USER_ROLE") {
+                    await getAllBills();
+                }
             };
-
-            fetchAccount();
+            fetchBills();
         }
-    },[user])
+    }, [user, getAllBills]);
 
-    console.log(allBills);
-    if(user.role === 'USER_ROLE'){
-        return(
+    if (!user) {
+        return (
             <Flex direction="column" minH="100vh">
-                <Navbar/>
-                    <SimpleGrid columns={[1,2,3]} spacing={6} p={3}>
-                        {allBills.map((bill) => (
-                            <CardBill
-                                key={bill._id}
-                                account={bill.account}
-                                user={bill.user}
-                                numeroFactura={bill._id}
-                                total={bill.total}
-                            />
-                        ))}
-                    </SimpleGrid>
-                <Footer/>
+                <Navbar />
+                <Flex flex="1" justify="center" align="center">
+                    <Spinner size="xl" />
+                    <Text ml={4}>Cargando usuario...</Text>
+                </Flex>
+                <Footer />
             </Flex>
-        )
-    }else if(user.role === 'ADMIN_ROLE'){
-        return(
-            <Flex direction="column" minH="100vh">
-                <Navbar/>
-                    <SimpleGrid columns={[1,2,3]} spacing={6} p={3}>
-                        {allBills.map((bill) => (
-                            <CardBill
-                                key={bill._id}
-                                account={bill.account}
-                                user={bill.user}
-                                numeroFactura={bill.numeroFactura}
-                                total={bill.total}
-                            />
-                        ))}
-                    </SimpleGrid>
-                <Footer/>
-            </Flex>
-        )
+        );
     }
 
-}
+    return (
+        <Box flex="1" overflowY="auto" minH="100vh">
+            <Navbar />
+            <Box p={6} maxW="1200px" mx="auto">
+                <Heading as="h1" size="xl" mb={6} textAlign="center">
+                    {user.role === 'ADMIN_ROLE' ? 'Panel de Facturas (Admin)' : 'Mis Facturas'}
+                </Heading>
+
+                {allBills.length === 0 ? (
+                    <Text textAlign="center" fontSize="lg" mt={10}>
+                        No hay facturas para mostrar.
+                    </Text>
+                ) : (
+                    <BillList bills={allBills} onSelectBill={setSelectedBill} />
+                )}
+
+            </Box>
+            <Footer />
+
+
+            {selectedBill && (
+                <BillDetailModal
+                    bill={selectedBill}
+                    isOpen={!!selectedBill}
+                    onClose={() => setSelectedBill(null)}
+
+                    printableContentRef={printableRef}
+                />
+            )}
+
+            {selectedBill && (
+                <div
+                    style={{
+                        position: 'absolute', 
+                        left: '-9999px',      
+                        top: '-9999px',     
+                        width: '210mm',       
+                        minHeight: '297mm',   
+                        overflow: 'hidden'    
+                    }}
+                >
+                    <PrintableBillContent
+                        ref={printableRef} 
+                        account={selectedBill.account}
+                        user={selectedBill.user}
+                        numeroFactura={selectedBill._id}
+                        total={selectedBill.total}
+                        products={selectedBill.products}
+                    />
+                </div>
+            )}
+
+
+        </Box>
+    );
+};
