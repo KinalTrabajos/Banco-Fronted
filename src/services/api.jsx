@@ -215,3 +215,14 @@ export const updateProduct = async(id,data) => {
         }
     }
 }
+
+export const tranfers = async(data) => {
+    try {
+        return await apiBanc.post('/transfer/makeTransfer',data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
