@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateUser, updatePassword } from "../../../services/api";
+import toast from "react-hot-toast"
 
 export const useUpdateUser = (id) => {
     const [loading, setLoading] = useState(false);
@@ -13,10 +14,10 @@ export const useUpdateUser = (id) => {
 
         try {
             const response = await updateUser(id, {name,direction,work,income})
-            setSuccess("Usuario actualizado correctamente")
+            toast.success("Usuario actualizado correctamente")
             return response
         } catch (err) {
-            setError("Error al actualizar el usuario")
+            toast.error("Error al actualizar el usuario")
             return { error: true, err }
         } finally {
             setLoading(false)
@@ -30,10 +31,10 @@ export const useUpdateUser = (id) => {
 
         try {
             const response = await updatePassword(id, {passwordOld,passwordNew})
-            setSuccess("Contraseña actualizada correctamente")
+            toast.success("¡Contraseña actualizada correctamente!")
             return response
         } catch (err) {
-            setError("Error al actualizar la contraseña")
+            toast.error("Error al actualizar la contraseña")
             return { error: true, err }
         } finally {
             setLoading(false)

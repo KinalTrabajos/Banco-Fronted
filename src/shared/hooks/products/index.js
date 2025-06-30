@@ -1,0 +1,5 @@
+export {useProductsView} from "./useProductsView.jsx"
+export {useProductsIdView} from "./useProductsIdView.jsx"
+export {useAddProducts} from "./useAddProducts.jsx"
+export {useDeleteProduct} from "./useDeleteProduct.jsx"
+export {useUpdateProduct} from "./useUpdateProduct.jsx"
