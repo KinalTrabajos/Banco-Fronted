@@ -9,18 +9,36 @@ import {
   Flex,
   useToast,
   Icon,
+  Text
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useState, useEffect, use } from "react"
 import { useTranfers } from "../../shared/hooks/tranfer/useTranfers"
 import { FaMoneyCheckAlt } from "react-icons/fa"
+import { format } from "date-fns";
+import { useGetHistoryFromUser } from "../../shared/hooks/history/useHistoryFromUser";
 
 export const TransferWiew = () => {
-const { addTranfer, isLoading } = useTranfers()
+  const { addTranfer, isLoading } = useTranfers()
   const toast = useToast()
 
   const [toAccount, setToAccount] = useState("")
   const [amount, setAmount] = useState("")
   const [description, setDescription] = useState("")
+  const [user, setUser ] = useState('');
+  const { historyUser, getHistoryByUser} = useGetHistoryFromUser();
+ 
+  useEffect(()=> {
+    const userLocal = JSON.parse(localStorage.getItem('user'));
+    setUser(userLocal);
+  },[])
+
+  useEffect(()=> {
+    const fetchHistory = async ()=> {
+      await getHistoryByUser({id: user.id});
+    }
+
+    fetchHistory();
+  },[])
 
   const handleSubmit = async () => {
     if (!toAccount || !amount || !description) {
@@ -93,6 +111,42 @@ const { addTranfer, isLoading } = useTranfers()
           >
             Transferir
           </Button>
+        </Stack>
+      </Box>
+      <Box
+        bg="white"
+        p={5}
+        m={5}
+        borderRadius="xl"
+        boxShadow="md"
+        maxH="400px"
+        overflowY="auto"
+      >
+        <Heading size="sm" mb={4}>
+          Historial de Movimientos
+        </Heading>
+        <Stack spacing={4}>
+          {historyUser.map((h) => (
+            <Box key={h._id} borderBottom="1px solid #e2e8f0" pb={2}>
+              <Text>
+                <strong>ID:</strong> {h.transfer}
+              </Text>
+              <Text>
+                <strong>Monto:</strong> Q{h.amount}
+              </Text>
+              <Text>
+                <strong>Descripción:</strong> {h.description}
+              </Text>
+              <Text>
+                <strong>Fecha:</strong>{" "}
+                {format(new Date(h.createdAt), "PPPpp")}
+              </Text>
+              <Text>
+                <strong>Para:</strong> {h.toUser?.name} —{" "}
+                {h.toUser?.noAccount}
+              </Text>
+            </Box>
+          ))}
         </Stack>
       </Box>
     </Flex>

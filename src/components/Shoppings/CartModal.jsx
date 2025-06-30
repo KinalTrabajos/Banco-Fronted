@@ -12,7 +12,7 @@ import { useAddShopping } from "../../shared/hooks/shopping"
 import { AddIcon, MinusIcon } from "@chakra-ui/icons"
 import toast from "react-hot-toast"
 
-export const CartModal = ({ cart, setCart, onClose, onBuyWithPoints }) => {
+export const CartModal = ({ cart, setCart, onClose, onBuyWithPoints, onFactureCrated }) => {
   const { addCompra, isLoading } = useAddShopping()
   const [processing, setProcessing] = useState(false)
 
@@ -33,7 +33,12 @@ export const CartModal = ({ cart, setCart, onClose, onBuyWithPoints }) => {
       quantity: item.quantity,
     }))
 
-    await addCompra(keeperUser, items)
+    const factura = await addCompra(keeperUser, items)
+
+    if(factura && typeof onFactureCrated === 'function'){
+      onFactureCrated(factura)
+    }
+
     setProcessing(false)
     onClose()
   }

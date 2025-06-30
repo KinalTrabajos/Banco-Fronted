@@ -13,12 +13,15 @@ export const useAddShopping = () => {
    setIsLoading(false)
  
    if (response.error) {
-     return toast.error(
+    toast.error(
        response?.e?.response?.data?.message || "No tiene saldo suficiente ."
      )
+     return null;
    }
  
    toast.success("¡Compra realizada exitosamente!")
+
+   return response.data.factura || null
  }
 
     return {

@@ -16,14 +16,13 @@ import {
 } from '@chakra-ui/react';
 import {  useEffect } from 'react'; 
 import { useReactToPrint } from 'react-to-print';
+import { format } from 'date-fns';
 
 
 export const BillDetailModal = ({ bill, isOpen, onClose, printableContentRef }) => {
   useEffect(() => {
     if (isOpen) {
-      console.log("DEBUG useEffect: Modal abierto, estado de printableContentRef.current (inicial):", printableContentRef.current);
       const timer = setTimeout(() => {
-        console.log("DEBUG useEffect (50ms): printableContentRef.current después de un breve retraso:", printableContentRef.current);
       }, 50);
       return () => clearTimeout(timer);
     }
@@ -32,17 +31,15 @@ export const BillDetailModal = ({ bill, isOpen, onClose, printableContentRef }) 
   const handlePrint = useReactToPrint({
 
     content: () => {
-      console.log("DEBUG: content() callback ejecutado. Valor de printableContentRef.current:", printableContentRef.current);
       return printableContentRef.current;
     },
     documentTitle: `Factura-${bill?._id || 'Desconocida'}`,
     pageStyle: `@page { size: A4 portrait; margin: 15mm; } @media print { body { -webkit-print-color-adjust: exact; } }`,
 
     onBeforeGetContent: async () => {
-      console.log("DEBUG: onBeforeGetContent() ejecutado. Verificando printableContentRef.current:", printableContentRef.current);
+      
 
       if (!printableContentRef.current) {
-        console.error("Error: printableContentRef.current es undefined antes de imprimir.");
         return Promise.reject("Contenido de impresión no disponible."); 
       }
       return Promise.resolve(); 
@@ -68,19 +65,13 @@ export const BillDetailModal = ({ bill, isOpen, onClose, printableContentRef }) 
           <VStack align="start" spacing={4} mb={6}>
             <Heading size="lg">Factura No. {bill._id}</Heading>
             <Text fontSize="md">
-              **Cliente:** {bill.user?.name || "No disponible"}
+              Cliente: {bill.user?.name || "No disponible"}
             </Text>
             <Text fontSize="md">
-              **Cuenta:** {bill.account?.noAccount || "No disponible"}
+              Cuenta: {bill.account?.noAccount || "No disponible"}
             </Text>
             <Text fontSize="md">
-              **Fecha de Emisión:** {new Date(bill.date).toLocaleDateString() || "No disponible"}
-            </Text>
-            <Text fontSize="md">
-              **Dirección:** {bill.account?.address || "No disponible"}
-            </Text>
-            <Text fontSize="md">
-              **Teléfono:** {bill.user?.phone || "No disponible"}
+              Fecha de Emisión: {format(new Date(bill.createdAt), "PPPpp") || "No disponible"}
             </Text>
             <Divider />
             <Heading size="md">Productos:</Heading>
@@ -92,16 +83,15 @@ export const BillDetailModal = ({ bill, isOpen, onClose, printableContentRef }) 
                       <Th>Producto</Th>
                       <Th isNumeric>Cantidad</Th>
                       <Th isNumeric>Precio Unitario</Th>
-                      <Th isNumeric>Subtotal</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     {bill.products.map((product, index) => (
                       <Tr key={index}>
-                        <Td>{product.name}</Td>
+                        {console.log(product)}
+                        <Td>{product.description}</Td>
                         <Td isNumeric>{product.quantity}</Td>
                         <Td isNumeric>${product.price ? product.price.toFixed(2) : '0.00'}</Td>
-                        <Td isNumeric>${(product.quantity * (product.price || 0)).toFixed(2)}</Td>
                       </Tr>
                     ))}
                   </Tbody>

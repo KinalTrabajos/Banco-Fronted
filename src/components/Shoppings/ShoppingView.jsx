@@ -15,16 +15,20 @@ import {
   ModalContent,
 } from "@chakra-ui/react"
 import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons"
-import { useState } from "react"
-import {useProductsView,useProductsIdView} from "../../shared/hooks/products"
+import { useState, useRef } from "react"
+import { useProductsView, useProductsIdView } from "../../shared/hooks/products"
 import { useAddShoppingsPoints } from "../../shared/hooks/shopping"
 import { CartModal } from "./CartModal"
 import { ModalProductAdd } from "../../components/Product/ModalProductAdd"
 import { ModalConfirDelete } from "../../components/Product/ModalConfirDelete"
 import { ModalProductUpdate } from "../Product/ModalProductUpdate"
+import { BillDetailModal } from "../Bill/BillDetailModal"
+import { PrintableBillContent } from "../Bill/PrintableBillContent"
 
 export const ShoppingView = () => {
   const [cart, setCart] = useState([])
+  const [selectedBill, setSelectedBill] = useState(null);
+  const printableRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const user = JSON.parse(localStorage.getItem("user") || "{}")
@@ -39,9 +43,9 @@ export const ShoppingView = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedProductId, setSelectedProductId] = useState(null)
   const [editProductData, setEditProductData] = useState(null)
-  const {isOpen: isEditOpen,onOpen: onEditOpen,onClose: onEditClose} = useDisclosure()
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure()
 
-  const {isOpen: isAddOpen,onOpen: onAddOpen,onClose: onAddClose} = useDisclosure()
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
 
   const products = isEmpresarial ? userProducts : allProducts
   const isLoading = isEmpresarial ? loadingUser : loadingAll
@@ -205,12 +209,43 @@ export const ShoppingView = () => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
         <ModalOverlay />
         <ModalContent>
-          <CartModal cart={cart} setCart={setCart} onClose={onClose} onBuyWithPoints={handleBuyWithPoints}/>
+          <CartModal cart={cart} setCart={setCart} onClose={onClose} onBuyWithPoints={handleBuyWithPoints} onFactureCrated={(bill) => setSelectedBill(bill)} />
         </ModalContent>
       </Modal>
       <ModalProductAdd isOpen={isAddOpen} onClose={onAddClose} />
-      <ModalConfirDelete isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} productId={selectedProductId}/>
-      <ModalProductUpdate isOpen={isEditOpen}onClose={onEditClose}product={editProductData}/>
+      <ModalConfirDelete isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} productId={selectedProductId} />
+      <ModalProductUpdate isOpen={isEditOpen} onClose={onEditClose} product={editProductData} />
+
+      {selectedBill && (
+        <BillDetailModal
+          bill={selectedBill}
+          isOpen={!!selectedBill}
+          onClose={() => setSelectedBill(null)}
+          printableContentRef={printableRef}
+        />
+      )}
+
+      {selectedBill && (
+        <div
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            top: "-9999px",
+            width: "210mm",
+            minHeight: "297mm",
+            overflow: "hidden",
+          }}
+        >
+          <PrintableBillContent
+            ref={printableRef}
+            account={selectedBill.account}
+            user={selectedBill.user}
+            numeroFactura={selectedBill._id}
+            total={selectedBill.total}
+            products={selectedBill.products}
+          />
+        </div>
+      )}
     </Box>
   )
 }

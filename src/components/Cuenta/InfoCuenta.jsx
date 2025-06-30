@@ -30,7 +30,6 @@ export const InfoCuenta = ({ idUser }) => {
   const { getAccountOfUser, accountDetails } = useAccountDetails();
   const { historyUser, getHistoryByUser } = useGetHistoryFromUser();
 
-  console.log(historyUser.description);
   useEffect(() => {
     const fetchAccount = async () => {
       await getAccountOfUser({ id: idUser });
@@ -107,7 +106,7 @@ export const InfoCuenta = ({ idUser }) => {
     return <Text>Cargando información de la cuenta...</Text>;
   }
 
-  console.log(saldoConvertido)
+
   return (
     <Flex direction="column" bg="gray.100" minH="100vh" p={8}>
       <Heading textAlign="center" mb={10}>
