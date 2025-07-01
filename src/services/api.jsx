@@ -227,3 +227,14 @@ export const tranfers = async(data) => {
         }
     }
 }
+
+export const cancelTranfers = async(id) => {
+    try {
+        return await apiBanc.delete(`/transfer/cancelTransfer/${id}`)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
