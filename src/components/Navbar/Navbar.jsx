@@ -16,6 +16,7 @@ const userIconUrl = "https://cdn-icons-png.flaticon.com/512/456/456212.png";
 
 export const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [navigation, setNavigation] = useState([]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -24,13 +25,24 @@ export const Navbar = () => {
     }
   }, []);
 
-  const navigation = [
-    { name: "Cuentas", href: "/cuenta" },
-    { name: "Transferencia", href: "/tranferencia" },
-    { name: "Compras", href: "/compras"},
-    { name: "Facturas", href: "/bills"},
-    ...(isAdmin ? [{ name: "Register", href: "/register" }] : []),
-  ];
+  useEffect(() => {
+    if (isAdmin) {
+      const navigationAdmin = [
+        { name: "Cuentas", href: "/cuenta" },
+        { name: "Facturas", href: "/bills" },
+        { name: "Register", href: "/register" }
+      ]
+      setNavigation(navigationAdmin);
+    } else {
+      const navigationUser = [
+        { name: "Mi Cuenta", href: "/cuenta" },
+        { name: "Transferencia", href: "/tranferencia" },
+        { name: "Compras", href: "/compras" },
+        { name: "Facturas", href: "/bills" },
+      ]
+      setNavigation(navigationUser);
+    }
+  }, [isAdmin])
 
   return (
     <Box

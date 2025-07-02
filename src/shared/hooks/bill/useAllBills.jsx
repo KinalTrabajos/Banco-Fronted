@@ -15,11 +15,22 @@ export const useBillsByRole = (user) => {
             responseData = await getBillByUser(user.id);
         }
 
-        if (responseData.error) {
-            toast.error(responseData.e?.response?.data || "Error fetching bills");
-        } else {
-            setBills(responseData.data.bills || []);
+        if (
+            responseData.error ||                           
+            !responseData.data ||                           
+            !Array.isArray(responseData.data.bills)        
+        ) {
+            const errorMsg =
+                responseData.msg ||                        
+                responseData.e?.response?.data?.msg ||     
+                "Error al obtener las facturas";            
+
+            toast.error(errorMsg);
+            setBills([]); 
+            return;
         }
+
+        setBills(responseData.data.bills);
     }, [user]);
 
     return { bills, fetchBills };

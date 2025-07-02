@@ -22,8 +22,10 @@ import { useEffect, useState } from "react";
 import { useAccountDetails } from "../../shared/hooks/useAccountDetails";
 import { useGetHistoryFromUser } from "../../shared/hooks/history/useHistoryFromUser";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export const InfoCuenta = ({ idUser }) => {
+  const navigate = useNavigate();
   const [flag, setFlag] = useBoolean();
   const [monedaDestino, setMonedaDestino] = useState("");
   const [saldoConvertido, setSaldoConvertido] = useState(null);
@@ -64,7 +66,7 @@ export const InfoCuenta = ({ idUser }) => {
 
   const convertirSaldo = async (to, amount) => {
     if (to === "USD") {
-      return amount.toFixed(2); // No es necesario convertir si ya está en USD
+      return amount.toFixed(2); 
     }
 
     try {
@@ -134,9 +136,9 @@ export const InfoCuenta = ({ idUser }) => {
               <Text fontWeight="medium">Puntos: {accountDetails.points}</Text>
             </HStack>
             <ButtonGroup mt={6} spacing={4}>
-              <Button colorScheme="blue">Transferir</Button>
-              <Button variant="outline" colorScheme="blue">
-                Canjear
+              <Button colorScheme="blue" onClick={() => navigate('/tranferencia')}>Transferir</Button>
+              <Button variant="outline" colorScheme="blue" onClick={() => navigate('/compras')}>
+                Canjear Puntos
               </Button>
             </ButtonGroup>
           </CardBody>

@@ -32,6 +32,18 @@ export const BillPage = () => {
             </Flex>
         );
     }
+    if(!bills){
+        return(
+            <Flex direction="column" minH="100vh">
+                <Navbar />
+                <Flex flex="1" justify="center" align="center">
+                    <Spinner size="xl" />
+                    <Text ml={4}>No hay Facturas emitidas</Text>
+                </Flex>
+                <Footer />
+            </Flex>
+        )
+    }
 
     return (
         <Box flex="1" overflowY="auto" minH="100vh">
@@ -39,7 +51,7 @@ export const BillPage = () => {
             <Box p={6} maxW="1200px" mx="auto">
                 <Heading as="h1" size="xl" mb={6} textAlign="center">
                     {user.role === "ADMIN_ROLE"
-                        ? "Panel de Facturas (Admin)"
+                        ? "Panel de Facturas"
                         : "Mis Facturas"}
                 </Heading>
 
