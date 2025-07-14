@@ -1,24 +1,41 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react'; 
 import toast from 'react-hot-toast';
 import { getHistoryByUser as getHistoryByUserRequest } from '../../../services';
 
 export const useGetHistoryFromUser = () => {
     const [historyUser, setHistoryUser] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); 
+    const [error, setError] = useState(null); 
 
-    const getHistoryByUser = async (id) => {
-        const responseData = await getHistoryByUserRequest(id);
+    const getHistoryByUser = useCallback(async (params) => {
+        setIsLoading(true); 
+        setError(null); 
 
-        if(responseData.error){
-            return toast.error(
-                responseData.e?.response?.data || 'Error to search the history'
-            )
-        }else {
-            setHistoryUser(responseData.data.histories)
+        try {
+            const responseData = await getHistoryByUserRequest(params); 
+            
+            if(responseData.error){
+                const errorMessage = responseData.e?.response?.data || 'Error al buscar el historial';
+                toast.error(errorMessage);
+                setError(errorMessage);
+                setHistoryUser([]); 
+            } else {
+                setHistoryUser(responseData.data.histories);
+            }
+        } catch (err) {
+            const errorMessage = err.message || 'Ocurrió un error inesperado al obtener el historial.';
+            toast.error(errorMessage);
+            setError(errorMessage);
+            setHistoryUser([]);
+        } finally {
+            setIsLoading(false); 
         }
-    }
+    }, []); 
 
-    return  {
+    return {
         historyUser,
-        getHistoryByUser
-    }
-}
+        getHistoryByUser,
+        isLoading, 
+        error 
+    };
+};

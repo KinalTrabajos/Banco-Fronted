@@ -39,6 +39,7 @@ export const Navbar = () => {
         { name: "Transferencia", href: "/tranferencia" },
         { name: "Compras", href: "/compras" },
         { name: "Facturas", href: "/bills" },
+        { name: "Favoritos", href: "/favorito" }
       ]
       setNavigation(navigationUser);
     }

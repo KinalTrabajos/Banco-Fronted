@@ -238,3 +238,25 @@ export const cancelTranfers = async(id) => {
         }
     }
 }
+
+export const viewFavorite = async (id) => {
+  try {
+    return await apiBanc.get(`/favorites/viewFavorites?=${id}`)
+  } catch (e) {
+    return {
+      error: true,
+      e
+    }
+  }
+}
+
+export const addFavorite = async (data) => {
+    try {
+        return await apiBanc.post('/favorites/addFavorite', data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}

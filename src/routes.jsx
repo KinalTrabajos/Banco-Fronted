@@ -6,6 +6,7 @@ import { ShoppingPage } from "./pages/Shopping";
 import {CuentaPage} from './pages/Cuenta/CuentasPage'
 import { BillPage } from "./pages/Bill/BillPage";
 import {TransfersPage} from "./pages/Transfers"
+import {Favorites} from "./pages/favorite"
 
 import { PrivateRoute } from "./components/setting/PrivateRoute";
 
@@ -17,7 +18,8 @@ const routes = [
   { path: "/cuenta", element: <CuentaPage/>},
   { path: "/user", element: <PrivateRoute><UserPage/></PrivateRoute> },
   { path: "/bills", element: <BillPage/>},
-  { path: "/tranferencia", element: <PrivateRoute><TransfersPage/></PrivateRoute>}
+  { path: "/tranferencia", element: <PrivateRoute><TransfersPage/></PrivateRoute>},
+  { path: "/favorito", element: <PrivateRoute><Favorites/></PrivateRoute>}
 ]
 
 export default routes

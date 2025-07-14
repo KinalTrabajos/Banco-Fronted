@@ -7,72 +7,118 @@ import {
   Input,
   Button,
   Flex,
-  useToast,
   Icon,
   Text,
   Badge,
-} from "@chakra-ui/react"
-import { useState, useEffect } from "react"
-import { useTranfers } from "../../shared/hooks/tranfer/useTranfers"
-import { FaMoneyCheckAlt } from "react-icons/fa"
-import { format } from "date-fns"
-import { useGetHistoryFromUser } from "../../shared/hooks/history/useHistoryFromUser"
-import { useTranfersCancel } from "../../shared/hooks/tranfer/useTranfersCancel"
+  Spinner,
+  Wrap,
+  WrapItem,
+  Tooltip,
+  useColorModeValue,
+  useDisclosure, // NUEVO
+  Modal, // NUEVO
+  ModalOverlay, // NUEVO
+  ModalContent, // NUEVO
+  ModalHeader, // NUEVO
+  ModalBody, // NUEVO
+  ModalFooter, // NUEVO
+  ModalCloseButton, // NUEVO
+} from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { useTranfers } from "../../shared/hooks/tranfer/useTranfers";
+import { FaMoneyCheckAlt, FaRegStar } from "react-icons/fa";
+import { format } from "date-fns";
+import { useGetHistoryFromUser } from "../../shared/hooks/history/useHistoryFromUser";
+import { useTranfersCancel } from "../../shared/hooks/tranfer/useTranfersCancel";
+import { useViewFavorite } from "../../shared/hooks/favorite/userViewFavorit";
+import { useAddFavorite } from "../../shared/hooks/favorite/useAddFavorite"; // NUEVO
 
 export const TransferWiew = () => {
-  const { addTranfer, isLoading } = useTranfers()
-  const { cancelTransfer } = useTranfersCancel()
-  const toast = useToast()
+  const { addTranfer, isLoading } = useTranfers();
+  const { cancelTransfer } = useTranfersCancel();
+  const { addFavo, isLoading: isAddingFavorite } = useAddFavorite(); // NUEVO
 
-  const [toAccount, setToAccount] = useState("")
-  const [amount, setAmount] = useState("")
-  const [description, setDescription] = useState("")
-  const [user, setUser] = useState(null)
-  const { historyUser, getHistoryByUser } = useGetHistoryFromUser()
-  const [hasFetchedHistory, setHasFetchedHistory] = useState(false)
+  const [toAccount, setToAccount] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [user, setUser] = useState(null);
+  const { historyUser, getHistoryByUser } = useGetHistoryFromUser();
+  const [hasFetchedHistory, setHasFetchedHistory] = useState(false);
+
+  const { favorites, isLoading: isLoadingFavorites } = useViewFavorite(
+    user?.id
+  );
+
+  const { isOpen, onOpen, onClose } = useDisclosure(); // NUEVO
+  const [selectedFavoriteId, setSelectedFavoriteId] = useState(""); // NUEVO
+  const [alias, setAlias] = useState(""); // NUEVO
 
   useEffect(() => {
-    const userLocal = JSON.parse(localStorage.getItem("user"))
-    setUser(userLocal)
-  }, [])
+    const userLocal = JSON.parse(localStorage.getItem("user"));
+    setUser(userLocal);
+  }, []);
 
   useEffect(() => {
     const fetchHistory = async () => {
       if (user?.id && !hasFetchedHistory) {
-        await getHistoryByUser({ id: user.id })
-        setHasFetchedHistory(true)
+        await getHistoryByUser({ id: user.id });
+        setHasFetchedHistory(true);
       }
-    }
-    fetchHistory()
-  }, [user, hasFetchedHistory, getHistoryByUser])
+    };
+    fetchHistory();
+  }, [user, hasFetchedHistory, getHistoryByUser]);
 
   const handleSubmit = async () => {
-    if (!toAccount || !amount || !description) {
-      return toast({
-        title: "Todos los campos son obligatorios",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-
     await addTranfer(toAccount, parseFloat(amount), description);
-
     setToAccount("");
     setAmount("");
     setDescription("");
-
-    await getHistoryByUser({ id: user.id })
-  }
+    await getHistoryByUser({ id: user.id });
+  };
 
   const handleCancel = async (id) => {
     await cancelTransfer(id);
-    await getHistoryByUser({ id: user.id })
-  }
+    await getHistoryByUser({ id: user.id });
+  };
+
+  // NUEVO: abrir modal
+  const handleOpenFavoriteModal = (accountId) => {
+    setSelectedFavoriteId(accountId);
+    setAlias("");
+    onOpen();
+  };
+
+  // NUEVO: confirmar agregar favorito
+  const handleAddFavorite = async () => {
+    await addFavo(selectedFavoriteId, alias);
+    onClose();
+  };
+
+  // Colors para modo claro/oscuro
+  const panelBg = useColorModeValue("white", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const inputBg = useColorModeValue("gray.50", "gray.800");
 
   return (
-    <Flex align="flex-start" justify="center" minH="100vh" bg="gray.50" p={4} gap={6} flexWrap="wrap">
-      <Box bg="white" p={8} rounded="2xl" boxShadow="2xl" w={{ base: "100%", md: "480px" }}>
+    <Flex
+      align="flex-start"
+      justify="center"
+      minH="100vh"
+      bg={useColorModeValue("gray.50", "gray.900")}
+      p={6}
+      gap={8}
+      flexWrap={{ base: "wrap", md: "nowrap" }}
+    >
+      {/* Panel izquierdo: Formulario + Favoritos */}
+      <Box
+        bg={panelBg}
+        p={8}
+        rounded="2xl"
+        boxShadow="2xl"
+        w={{ base: "100%", md: "480px" }}
+        border="1px solid"
+        borderColor={borderColor}
+      >
         <Flex align="center" mb={6}>
           <Icon as={FaMoneyCheckAlt} boxSize={8} color="teal.600" mr={3} />
           <Heading size="lg" color="teal.700">
@@ -80,42 +126,52 @@ export const TransferWiew = () => {
           </Heading>
         </Flex>
 
-        <Box mb={4}>
-          <Heading size="sm" color="teal.600" mb={2}>
-            Clientes Frecuentes
-          </Heading>
-          <Flex gap={2} flexWrap="wrap">
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="teal"
-            >
-              Juan Pérez
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="teal"
-            >
-              Empresa XYZ
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="teal"
-            >
-              María López
-            </Button>
-          </Flex>
-        </Box>
-
         <Stack spacing={4}>
+          {/* Favoritos debajo del input de cuenta destino */}
+          <Box mb={4}>
+            <Text mb={2} fontWeight="semibold" color="teal.600">
+              Cuentas Favoritas
+            </Text>
+
+            {isLoadingFavorites ? (
+              <Flex justify="center" py={4}>
+                <Spinner size="md" color="teal.500" />
+              </Flex>
+            ) : favorites.length === 0 ? (
+              <Text fontSize="sm" color="gray.500" fontStyle="italic">
+                No tienes cuentas favoritas registradas.
+              </Text>
+            ) : (
+              <Wrap spacing={2}>
+                {favorites.map((fav) => (
+                  <WrapItem key={fav._id}>
+                    <Tooltip label={`Alias: ${fav.alias}`} hasArrow>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        colorScheme="teal"
+                        onClick={() =>
+                          handleSelectFavorite(fav.favoriteAccount?.noAccount)
+                        }
+                        leftIcon={<FaRegStar />}
+                      >
+                        {fav.favoriteAccount?.noAccount}
+                      </Button>
+                    </Tooltip>
+                  </WrapItem>
+                ))}
+              </Wrap>
+            )}
+          </Box>
           <FormControl isRequired>
             <FormLabel>Número de Cuenta Destino</FormLabel>
             <Input
               placeholder="Ej. 5401484935"
               value={toAccount}
               onChange={(e) => setToAccount(e.target.value)}
+              bg={inputBg}
+              borderColor={borderColor}
+              _focus={{ borderColor: "teal.400" }}
             />
           </FormControl>
 
@@ -126,6 +182,9 @@ export const TransferWiew = () => {
               placeholder="Cantidad"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              bg={inputBg}
+              borderColor={borderColor}
+              _focus={{ borderColor: "teal.400" }}
             />
           </FormControl>
 
@@ -135,13 +194,16 @@ export const TransferWiew = () => {
               placeholder="Motivo de la transferencia"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              bg={inputBg}
+              borderColor={borderColor}
+              _focus={{ borderColor: "teal.400" }}
             />
           </FormControl>
 
           <Button
             colorScheme="teal"
             size="lg"
-            mt={4}
+            mt={2}
             onClick={handleSubmit}
             isLoading={isLoading}
           >
@@ -150,14 +212,17 @@ export const TransferWiew = () => {
         </Stack>
       </Box>
 
+      {/* Panel derecho: Historial */}
       <Box
-        bg="white"
+        bg={panelBg}
         p={6}
         borderRadius="2xl"
         boxShadow="lg"
         maxH="600px"
         overflowY="auto"
         w={{ base: "100%", md: "400px" }}
+        border="1px solid"
+        borderColor={borderColor}
       >
         <Heading size="md" mb={4} color="teal.700">
           Historial de Movimientos
@@ -173,10 +238,10 @@ export const TransferWiew = () => {
               <Box
                 key={h._id}
                 border="1px solid"
-                borderColor="gray.200"
+                borderColor={borderColor}
                 borderRadius="lg"
                 p={3}
-                bg="gray.50"
+                bg={useColorModeValue("gray.50", "gray.600")}
               >
                 <Stack spacing={1}>
                   <Flex justify="space-between" align="center">
@@ -192,23 +257,73 @@ export const TransferWiew = () => {
                     {format(new Date(h.createdAt), "PPPpp")}
                   </Text>
                   <Text fontSize="xs" color="gray.600">
-                    Para: {h.toUser?.name} — {h.toUser?.noAccount}
+                    Para: {h.toUser?.name} — {h.toUser?.noAccount} id cuenta{" "}
+                    {h.toUser?._id}
                   </Text>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    mt={2}
-                    onClick={() => handleCancel(h.transfer)}
-                    isDisabled={!isCancelable}
-                  >
-                    Cancelar Transferencia
-                  </Button>
+                  <Flex mt={2} gap={2}>
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleCancel(h.transfer)}
+                      isDisabled={!isCancelable}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="teal"
+                      variant="outline"
+                      onClick={() => {
+                        if (h.toUser?._id) {
+                          handleOpenFavoriteModal(h.toUser._id);
+                        } else {
+                          console.error(
+                            "Este movimiento no tiene un destinatario válido."
+                          );
+                        }
+                      }}
+                      isDisabled={!h.toUser?._id}
+                    >
+                      Agregar a Favoritos
+                    </Button>
+                  </Flex>
                 </Stack>
               </Box>
             );
           })}
         </Stack>
       </Box>
+
+      {/* Modal para agregar favorito */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Agregar a Favoritos</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Alias para esta cuenta</FormLabel>
+              <Input
+                placeholder="Ej. Mi proveedor"
+                value={alias}
+                onChange={(e) => setAlias(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose} mr={3}>
+              Cancelar
+            </Button>
+            <Button
+              colorScheme="teal"
+              onClick={handleAddFavorite}
+              isLoading={isAddingFavorite}
+            >
+              Guardar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
-  )
-}
+  );
+};
