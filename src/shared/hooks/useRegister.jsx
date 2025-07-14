@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register as registerRequest } from "../../services";
+import { createAccountRequest as registerRequest } from "../../services";
 import toast from "react-hot-toast";
 
 

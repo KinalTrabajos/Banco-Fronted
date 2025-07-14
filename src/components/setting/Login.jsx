@@ -17,9 +17,11 @@ import {
   validatePassword,
 } from "../../shared/validators";
 import { useLogin } from "../../shared/hooks";
+import { useNavigate } from "react-router-dom";
 
 export const Login = ({ switchAuthHandler }) => {
   const { login, isLoading } = useLogin()
+  const navigate = useNavigate();
 
   const [formState, setFormState] = useState({
     email: {
@@ -131,6 +133,9 @@ export const Login = ({ switchAuthHandler }) => {
             isLoading={isLoading}
           >
             Iniciar Sesión
+          </Button>
+          <Button onClick={() => navigate('/register')}>
+            Solitar cuenta
           </Button>
         </VStack>
       </form> 

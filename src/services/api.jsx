@@ -260,3 +260,25 @@ export const addFavorite = async (data) => {
         }
     }
 }
+
+export const createAccountRequest = async (data) => {
+    try {
+        return await apiBanc.post('/accountRequest/account-request', data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const getRequestPending = async() => {
+    try {
+        return await apiBanc.get('/accountRequest/account-requests/view')
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
