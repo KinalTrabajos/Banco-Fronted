@@ -27,11 +27,9 @@ export const useRegister = () => {
             return;
         }
 
-        const { userDetails } = response.data;
-
         toast.success("Usuario registrado correctamente");
 
-        navigate("/DashboardPage", { replace: true });
+        navigate("/", { replace: true });
         window.location.reload();
     };
 

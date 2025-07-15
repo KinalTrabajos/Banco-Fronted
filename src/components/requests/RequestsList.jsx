@@ -23,13 +23,19 @@ export const RequestsList = ({ requests, onSelectRequest }) => {
             <Text>
               <strong>Direccion:</strong> {request.direction || "No disponible"}
             </Text>
-            <Text fontSize="xl" fontWeight="bold" color="teal.600">
-              DPI: ${request.dpi}
-            </Text>
+            {request.dpi ? (
+              <Text fontSize="xl" fontWeight="bold" color="teal.600">
+                DPI: {request.dpi}
+              </Text>
+            ) : (
+              <Text fontSize="xl" fontWeight="bold" color="teal.600">
+                Solicitud Empresarial
+              </Text>
+            )}
             <Flex justify="end" w="100%" mt={4}>
-                <Button colorScheme="blue" size="sm" onClick={() => onSelectBill(request)}>
-                    Ver Detalles
-                </Button>
+              <Button colorScheme="blue" size="sm" onClick={() => onSelectRequest(request)}>
+                Ver Detalles
+              </Button>
             </Flex>
           </VStack>
         </Box>
