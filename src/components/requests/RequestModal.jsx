@@ -17,10 +17,12 @@ import {
     Stack
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { updateStatusRequests } from '../../shared/hooks/accountRequests/useUpdateRequests';
 
 export const RequestsModal = ({ request, isOpen, onClose, printableContentRef }) => {
     const [showReason, setShowReason] = useState(false);
     const [reason, setReason] = useState('');
+    const { updateRequests, message} = updateStatusRequests();
 
     useEffect(() => {
         if (isOpen) {
@@ -30,13 +32,13 @@ export const RequestsModal = ({ request, isOpen, onClose, printableContentRef })
     }, [isOpen, printableContentRef]);
 
     const handleApprove = () => {
-        console.log("Cuenta aprobada");
+        updateRequests(request._id, {status: 'approved'})
         onClose();
     };
 
     const handleDeny = () => {
         if (showReason && reason.trim()) {
-            console.log("Cuenta denegada con motivo:", reason);
+            updateRequests(request._id, { status: 'rejected', rejectionReason: reason})
             onClose();
         } else {
             setShowReason(true);

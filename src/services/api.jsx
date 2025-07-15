@@ -282,3 +282,14 @@ export const getRequestPending = async() => {
         }
     }
 }
+
+export const updateStatusRequests = async (id, data) => {
+    try {
+        return await apiBanc.put(`/accountRequest/account-requests/${id}`, data)
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
