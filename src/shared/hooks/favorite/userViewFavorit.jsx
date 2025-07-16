@@ -1,29 +1,30 @@
-import { viewFavorite } from "../../../services/api";
-import { useEffect, useState } from "react";
+import { viewFavorite } from "../../../services/api"
+import { useEffect, useState } from "react"
 
 export const useViewFavorite = (id) => {
-  const [favorites, setFavorites] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [favorites, setFavorites] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const fetchFavorite = async () => {
-    setIsLoading(true);
-    const response = await viewFavorite(id);
+    setIsLoading(true)
+    const response = await viewFavorite(id)
     if (response.error) {
-      console.log("Error al obtener favoritos", response.e);
+      console.log("Error al obtener favoritos", response.e)
     } else {
-      setFavorites(response.data.favorites);
+      setFavorites(response.data.favorites)
     }
     setIsLoading(false);
-  };
+  }
 
   useEffect(() => {
     if (id && id !== "") {
-      fetchFavorite();
+      fetchFavorite()
     }
-  }, [id]);
+  }, [id])
 
   return {
     favorites,
     isLoading,
-  };
-};
+    getFavorites: fetchFavorite,
+  }
+}

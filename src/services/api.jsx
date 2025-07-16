@@ -260,3 +260,27 @@ export const addFavorite = async (data) => {
         }
     }
 }
+
+export const deleteFavorite = async (id) => {
+    try {
+        return await apiBanc.delete(`/favorites/deleteFavorite/${id}`,{
+            data: { confirm: true },
+        })
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
+export const updateFavorite = async (id,data) => {
+    try {
+        return await apiBanc.put(`/favorites/editFavorite/${id}`, data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
