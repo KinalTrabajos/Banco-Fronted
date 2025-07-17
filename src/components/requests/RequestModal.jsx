@@ -18,11 +18,23 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { updateStatusRequests } from '../../shared/hooks/accountRequests/useUpdateRequests';
+import emailjs from '@emailjs/browser'
 
 export const RequestsModal = ({ request, isOpen, onClose, printableContentRef }) => {
     const [showReason, setShowReason] = useState(false);
     const [reason, setReason] = useState('');
-    const { updateRequests, message} = updateStatusRequests();
+    const { updateRequests, message } = updateStatusRequests();
+
+    const sendEmail = (templateId, toEmail) => {
+        return emailjs.send(
+            'service_hd61v07',
+            templateId,
+            {
+                to_email: toEmail,
+            },
+            'EqbW0eW_UPtGuoknR'
+        )
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -31,18 +43,31 @@ export const RequestsModal = ({ request, isOpen, onClose, printableContentRef })
         }
     }, [isOpen, printableContentRef]);
 
-    const handleApprove = () => {
-        updateRequests(request._id, {status: 'approved'})
+    const handleApprove = async () => {
+        try {
+            updateRequests(request._id, { status: 'approved' })
+
+            await sendEmail('template_qe79ai8', request.email);
+        } catch (error) {
+            console.log('error to send email', error)
+            return
+        }
         onClose();
     };
 
     const handleDeny = () => {
-        if (showReason && reason.trim()) {
-            updateRequests(request._id, { status: 'rejected', rejectionReason: reason})
-            onClose();
-        } else {
-            setShowReason(true);
+        try {
+            if (showReason && reason.trim()) {
+                updateRequests(request._id, { status: 'rejected', rejectionReason: reason })
+                sendEmail('template_qe79ai8', request.email)
+            } else {
+                setShowReason(true);
+            }
+        } catch (error) {
+            console.log('error to send email', error)
+            return
         }
+        onClose();
     };
 
     if (!request) return null;
