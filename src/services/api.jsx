@@ -284,3 +284,36 @@ export const updateFavorite = async (id,data) => {
         }
     }
 }
+
+export const getRequestPending = async() => {
+    try {
+        return await apiBanc.get('/accountRequest/account-requests/view')
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}
+
+export const updateStatusRequests = async (id, data) => {
+    try {
+        return await apiBanc.put(`/accountRequest/account-requests/${id}`, data)
+    } catch (e) {
+        return {
+            error: true,
+            e
+        }
+    }
+}
+
+export const createAccountRequest = async (data) => {
+    try {
+        return await apiBanc.post('/accountRequest/account-request', data)
+    } catch (e) {
+        return{
+            error: true,
+            e
+        }
+    }
+}

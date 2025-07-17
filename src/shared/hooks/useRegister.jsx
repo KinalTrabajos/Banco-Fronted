@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register as registerRequest } from "../../services";
+import { createAccountRequest as registerRequest } from "../../services";
 import toast from "react-hot-toast";
 
 
@@ -27,11 +27,9 @@ export const useRegister = () => {
             return;
         }
 
-        const { userDetails } = response.data;
-
         toast.success("Usuario registrado correctamente");
 
-        navigate("/DashboardPage", { replace: true });
+        navigate("/", { replace: true });
         window.location.reload();
     };
 

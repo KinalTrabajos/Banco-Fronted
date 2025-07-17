@@ -30,7 +30,7 @@ export const Navbar = () => {
       const navigationAdmin = [
         { name: "Cuentas", href: "/cuenta" },
         { name: "Facturas", href: "/bills" },
-        { name: "Register", href: "/register" }
+        { name: "Register", href: "/requests" }
       ]
       setNavigation(navigationAdmin);
     } else {
