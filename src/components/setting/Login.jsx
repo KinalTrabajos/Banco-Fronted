@@ -9,6 +9,9 @@ import {
   Input as ChakraInput,
   Text,
   VStack,
+  useColorModeValue,
+  Flex,
+  Image,
 } from "@chakra-ui/react";
 import {
   emailValidationMessage,
@@ -19,9 +22,19 @@ import {
 import { useLogin } from "../../shared/hooks";
 import { useNavigate } from "react-router-dom";
 
+import loginImage from "../../assets/image/login.jpeg";
+
 export const Login = ({ switchAuthHandler }) => {
-  const { login, isLoading } = useLogin()
+  const { login, isLoading } = useLogin();
   const navigate = useNavigate();
+
+  const primaryColor = useColorModeValue('purple.500', 'purple.300');
+  const accentColor = useColorModeValue('gray.800', 'gray.100'); // Negro/gris oscuro para el texto y fondo general
+  const cardBg = useColorModeValue('gray.900', 'gray.700'); // Fondo del formulario oscuro en ambos modos
+  const textColor = useColorModeValue('whiteAlpha.900', 'whiteAlpha.900'); // Texto blanco dentro del formulario
+  const inputBorderColor = useColorModeValue('gray.600', 'gray.500');
+  const inputFocusBorderColor = useColorModeValue('purple.400', 'purple.300');
+  const imageBorderColor = useColorModeValue('purple.500', 'purple.300'); // Borde de la imagen morado
 
   const [formState, setFormState] = useState({
     email: {
@@ -77,68 +90,135 @@ export const Login = ({ switchAuthHandler }) => {
     isLoading || !formState.email.isValid || !formState.password.isValid;
 
   return (
-    <Box
-      maxW="400px"
-      mx="auto"
-      mt="8"
-      p="8"
-      borderWidth="1px"
-      borderRadius="lg"
-      boxShadow="lg"
-      bg="white"
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bg={accentColor}
+      p={{ base: 4, md: 8 }}
     >
-      <Heading mb="6" textAlign="center" size="lg">
-        Iniciar Sesión
-      </Heading>
+      <Box
+        flex="1"
+        display={{ base: "none", md: "block" }}
+        position="relative"
+        overflow="hidden"
+        borderRadius="xl"
+        boxShadow="2xl"
+        height="600px"
+        mr={8}
+        border="2px solid"
+        borderColor={imageBorderColor}
+      >
+        <Image
+          src={loginImage}
+          alt="Login Background"
+          objectFit="cover"
+          width="100%"
+          height="100%"
+          fallbackSrc="https://via.placeholder.com/600x800?text=Imagen+de+Login"
+        />
+      </Box>
 
-      <form onSubmit={handleLogin}>
-        <VStack spacing="4">
-          <FormControl
-            isInvalid={formState.email.showError}
-            isRequired
-          >
-            <FormLabel>Email</FormLabel>
-            <ChakraInput
-              type="email"
-              value={formState.email.value}
-              onChange={(e) => handleInputValueChange(e.target.value, "email")}
-              onBlur={(e) => handleInputValidationOnBlur(e.target.value, "email")}
-            />
-            {formState.email.showError && (
-              <FormErrorMessage>{emailValidationMessage}</FormErrorMessage>
-            )}
-          </FormControl>
+      <Box
+        maxW={{ base: "90%", md: "450px" }}
+        mx={{ base: "auto", md: "unset" }}
+        p={{ base: "6", md: "10" }}
+        borderWidth="1px"
+        borderRadius="xl"
+        boxShadow="2xl"
+        bg={cardBg}
+        color={textColor}
+        borderColor={useColorModeValue('gray.700', 'gray.600')}
+        _hover={{
+          boxShadow: "dark-lg",
+          transform: "translateY(-5px)",
+        }}
+        transition="all 0.3s ease-in-out"
+      >
+        <Heading mb="8" textAlign="center" size="xl" color={primaryColor} fontWeight="extrabold">
+          Bienvenido de Nuevo
+        </Heading>
 
-          <FormControl
-            isInvalid={formState.password.showError}
-            isRequired
-          >
-            <FormLabel>Contraseña</FormLabel>
-            <ChakraInput
-              type="password"
-              value={formState.password.value}
-              onChange={(e) => handleInputValueChange(e.target.value, "password")}
-              onBlur={(e) => handleInputValidationOnBlur(e.target.value, "password")}
-            />
-            {formState.password.showError && (
-              <FormErrorMessage>{validatePasswordMessage}</FormErrorMessage>
-            )}
-          </FormControl>
+        <form onSubmit={handleLogin}>
+          <VStack spacing="5">
+            <FormControl
+              isInvalid={formState.email.showError}
+              isRequired
+            >
+              <FormLabel htmlFor="email" fontWeight="semibold">Email</FormLabel>
+              <ChakraInput
+                id="email"
+                type="email"
+                value={formState.email.value}
+                onChange={(e) => handleInputValueChange(e.target.value, "email")}
+                onBlur={(e) => handleInputValidationOnBlur(e.target.value, "email")}
+                size="lg"
+                borderColor={inputBorderColor}
+                _hover={{ borderColor: inputFocusBorderColor }}
+                _focus={{
+                  borderColor: inputFocusBorderColor,
+                  boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                }}
+              />
+              {formState.email.showError && (
+                <FormErrorMessage fontSize="sm" color="red.400">{emailValidationMessage}</FormErrorMessage>
+              )}
+            </FormControl>
 
-          <Button
-            type="submit"
-            colorScheme="teal"
-            width="full"
-            isDisabled={isSubmitButtonDisabled}
-            isLoading={isLoading}
-          >
-            Iniciar Sesión
-          </Button>
-          <Button onClick={() => navigate('/register')}>
-            Solitar cuenta
-          </Button>
-        </VStack>
-      </form> 
-    </Box>
+            <FormControl
+              isInvalid={formState.password.showError}
+              isRequired
+            >
+              <FormLabel htmlFor="password" fontWeight="semibold">Contraseña</FormLabel>
+              <ChakraInput
+                id="password"
+                type="password"
+                value={formState.password.value}
+                onChange={(e) => handleInputValueChange(e.target.value, "password")}
+                onBlur={(e) => handleInputValidationOnBlur(e.target.value, "password")}
+                size="lg"
+                borderColor={inputBorderColor}
+                _hover={{ borderColor: inputFocusBorderColor }}
+                _focus={{
+                  borderColor: inputFocusBorderColor,
+                  boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                }}
+              />
+              {formState.password.showError && (
+                <FormErrorMessage fontSize="sm" color="red.400">{validatePasswordMessage}</FormErrorMessage>
+              )}
+            </FormControl>
+
+            <Button
+              type="submit"
+              colorScheme="purple"
+              size="lg"
+              width="full"
+              isDisabled={isSubmitButtonDisabled}
+              isLoading={isLoading}
+              mt="4"
+              fontWeight="bold"
+              _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+              transition="all 0.2s ease-in-out"
+            >
+              Iniciar Sesión
+            </Button>
+
+            <Text fontSize="md" mt="4" textAlign="center">
+              ¿No tienes cuenta?{" "}
+              <Button
+                variant="link"
+                colorScheme="purple"
+                fontWeight="bold"
+                onClick={() => navigate('/register')}
+                _hover={{ textDecoration: "underline" }}
+              >
+                Solicita una aquí
+              </Button>
+            </Text>
+          </VStack>
+        </form>
+      </Box>
+    </Flex>
   )
 }

@@ -24,8 +24,9 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { FaRegStar, FaTrash, FaEdit } from "react-icons/fa";
+import { FaRegStar, FaTrash, FaEdit, FaPlusCircle } from "react-icons/fa";
 import {
   useViewFavorite,
   useAddFavorite,
@@ -33,52 +34,57 @@ import {
   useEditFavorite,
 } from "../../shared/hooks/favorite";
 import { useEffect, useState, useRef } from "react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export const FavoritePage = () => {
-  const [user, setUser] = useState(null)
-  const [noAccountInput, setNoAccountInput] = useState("")
-  const [aliasInput, setAliasInput] = useState("")
+  const [user, setUser] = useState(null);
+  const [noAccountInput, setNoAccountInput] = useState("");
+  const [aliasInput, setAliasInput] = useState("");
 
-  const [selectedFavoriteId, setSelectedFavoriteId] = useState(null)
-  const [editAliasInput, setEditAliasInput] = useState("")
-  const cancelRef = useRef()
+  const [selectedFavoriteId, setSelectedFavoriteId] = useState(null);
+  const [editAliasInput, setEditAliasInput] = useState("");
+  const cancelRef = useRef();
 
-  const toast = useToast()
+  const toast = useToast();
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
-  } = useDisclosure()
+  } = useDisclosure();
 
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
-  } = useDisclosure()
+  } = useDisclosure();
 
   useEffect(() => {
-    const userLocal = JSON.parse(localStorage.getItem("user"))
-    setUser(userLocal)
-  }, [])
+    const userLocal = JSON.parse(localStorage.getItem("user"));
+    setUser(userLocal);
+  }, []);
 
-  const {
-    favorites,
-    isLoading,
-    getFavorites,
-  } = useViewFavorite(user?.id)
+  const { favorites, isLoading, getFavorites } = useViewFavorite(user?.id);
 
-  const { addFavo, isLoading: isAdding } = useAddFavorite()
-  const { deleteFavo } = useDeleteFavorito()
-  const { editFavo } = useEditFavorite()
+  const { addFavo, isLoading: isAdding } = useAddFavorite();
+  const { deleteFavo } = useDeleteFavorito();
+  const { editFavo } = useEditFavorite();
 
   const handleAddFavorite = async () => {
     if (!noAccountInput || !aliasInput) {
-      return
+      toast({
+        title: "Campos vacíos",
+        description: "Por favor, ingresa el número de cuenta y el alias.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
     }
 
     const yaExiste = favorites.some(
       (fav) => fav.favoriteAccount?.noAccount === noAccountInput
-    )
+    );
 
     if (yaExiste) {
       return toast({
@@ -86,42 +92,62 @@ export const FavoritePage = () => {
         status: "error",
         duration: 4000,
         isClosable: true,
-      })
+      });
     }
 
-    await addFavo(noAccountInput, aliasInput)
-    await getFavorites(user?.id)
+    await addFavo(noAccountInput, aliasInput);
+    await getFavorites(user?.id);
 
-    setNoAccountInput("")
-    setAliasInput("")
-  }
+    setNoAccountInput("");
+    setAliasInput("");
+
+  };
 
   const handleDeleteFavorite = async () => {
     if (selectedFavoriteId) {
-      await deleteFavo(selectedFavoriteId)
-      await getFavorites(user?.id)
-      setSelectedFavoriteId(null)
-      onDeleteClose()
+      await deleteFavo(selectedFavoriteId);
+      await getFavorites(user?.id);
+      setSelectedFavoriteId(null);
+      onDeleteClose();
     }
-  }
+  };
 
   const handleOpenEdit = (fav) => {
-    setSelectedFavoriteId(fav._id)
-    setEditAliasInput(fav.alias)
-    onEditOpen()
-  }
+    setSelectedFavoriteId(fav._id);
+    setEditAliasInput(fav.alias);
+    onEditOpen();
+  };
 
   const handleEditFavorite = async () => {
     if (!editAliasInput) {
-      return
+      toast({
+        title: "Alias vacío",
+        description: "Por favor, ingresa un alias para guardar los cambios.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
     }
 
-    await editFavo(selectedFavoriteId, editAliasInput)
-    await getFavorites(user?.id)
-    setSelectedFavoriteId(null)
-    setEditAliasInput("")
-    onEditClose()
-  }
+    await editFavo(selectedFavoriteId, editAliasInput);
+    await getFavorites(user?.id);
+    setSelectedFavoriteId(null);
+    setEditAliasInput("");
+    onEditClose();
+  };
+
+  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const cardBg = useColorModeValue("white", "gray.700");
+  const headingColor = useColorModeValue("purple.700", "purple.300");
+  const textColor = useColorModeValue("gray.700", "gray.200");
+  const inputBg = useColorModeValue("gray.50", "gray.600");
+  const inputBorderColor = useColorModeValue("gray.200", "gray.500");
+  const buttonColorScheme = "purple";
+  const deleteButtonScheme = "red";
+  const editButtonScheme = "teal";
+  const modalBg = useColorModeValue("white", "gray.700");
+  const modalOverlayBg = useColorModeValue("blackAlpha.600", "blackAlpha.700");
 
   return (
     <Flex
@@ -129,37 +155,70 @@ export const FavoritePage = () => {
       align="center"
       justify="flex-start"
       minH="100vh"
-      bg="gray.50"
-      py={10}
-      px={4}
+      bg={bgColor}
+      py={{ base: 6, md: 10 }}
+      px={{ base: 4, md: 8 }}
     >
-      <Heading size="lg" color="teal.700" mb={6}>
-        Cuentas Favoritas
+      <Heading size="xl" color={headingColor} mb={8} textAlign="center">
+        <Icon as={FaRegStar} mr={3} /> Tus Cuentas Favoritas
       </Heading>
 
       <Box
-        bg="white"
-        p={6}
-        rounded="lg"
-        boxShadow="md"
-        mb={6}
-        w={{ base: "100%", md: "600px" }}
+        bg={cardBg}
+        p={{ base: 6, md: 8 }}
+        rounded="2xl"
+        boxShadow="xl"
+        mb={8}
+        w={{ base: "100%", md: "700px" }}
+        transition="all 0.3s ease-in-out"
+        _hover={{ boxShadow: "dark-lg" }}
       >
-        <Stack spacing={3}>
+        <Heading
+          size="md"
+          color={headingColor}
+          mb={5}
+          borderBottom="1px solid"
+          borderColor={inputBorderColor}
+          pb={3}
+        >
+          Agregar Nuevo Favorito
+        </Heading>
+        <Stack spacing={4}>
           <Input
             placeholder="Número de cuenta"
             value={noAccountInput}
             onChange={(e) => setNoAccountInput(e.target.value)}
+            bg={inputBg}
+            borderColor={inputBorderColor}
+            _hover={{ borderColor: buttonColorScheme + ".400" }}
+            _focus={{
+              borderColor: buttonColorScheme + ".500",
+              boxShadow: `0 0 0 1px ${buttonColorScheme}.500`,
+            }}
+            color={textColor}
           />
           <Input
-            placeholder="Alias"
+            placeholder="Alias (Ej. 'Mi Hermano', 'Pago de Renta')"
             value={aliasInput}
             onChange={(e) => setAliasInput(e.target.value)}
+            bg={inputBg}
+            borderColor={inputBorderColor}
+            _hover={{ borderColor: buttonColorScheme + ".400" }}
+            _focus={{
+              borderColor: buttonColorScheme + ".500",
+              boxShadow: `0 0 0 1px ${buttonColorScheme}.500`,
+            }}
+            color={textColor}
           />
           <Button
-            colorScheme="teal"
+            colorScheme={buttonColorScheme}
             onClick={handleAddFavorite}
             isLoading={isAdding}
+            leftIcon={<Icon as={FaPlusCircle} />}
+            size="lg"
+            mt={4}
+            _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+            transition="all 0.2s ease"
           >
             Agregar a Favoritos
           </Button>
@@ -167,19 +226,23 @@ export const FavoritePage = () => {
       </Box>
 
       {isLoading ? (
-        <Spinner size="xl" color="teal.500" />
+        <Spinner size="xl" color={buttonColorScheme + ".500"} mt={10} />
       ) : (
-        <Stack spacing={4} w={{ base: "100%", md: "600px" }}>
+        <Stack spacing={5} w={{ base: "100%", md: "700px" }}>
           {favorites.length === 0 && (
             <Box
-              bg="white"
+              bg={cardBg}
               p={6}
               rounded="lg"
               boxShadow="md"
               textAlign="center"
+              color={textColor}
+              border="1px solid"
+              borderColor={inputBorderColor}
             >
-              <Text color="gray.500">
-                No tienes cuentas favoritas registradas.
+              <Text fontSize="lg">
+                No tienes cuentas favoritas registradas. ¡Agrega una para
+                empezar!
               </Text>
             </Box>
           )}
@@ -187,58 +250,82 @@ export const FavoritePage = () => {
           {favorites.map((fav) => (
             <Box
               key={fav._id}
-              bg="white"
+              bg={cardBg}
               p={5}
               borderRadius="lg"
               boxShadow="md"
               border="1px solid"
-              borderColor="gray.200"
+              borderColor={inputBorderColor}
+              _hover={{ boxShadow: "lg", transform: "translateY(-2px)" }}
+              transition="all 0.2s ease"
             >
               <Flex justify="space-between" align="center" mb={2}>
                 <Flex align="center">
-                  <Icon as={FaRegStar} color="teal.500" boxSize={5} mr={2} />
-                  <Text fontWeight="bold" color="teal.700">
+                  <Icon
+                    as={FaRegStar}
+                    color={buttonColorScheme + ".500"}
+                    boxSize={6}
+                    mr={3}
+                  />
+                  <Text fontWeight="bold" fontSize="xl" color={headingColor}>
                     {fav.alias}
                   </Text>
                 </Flex>
                 {fav.isFavorite && (
-                  <Badge colorScheme="green">Favorito</Badge>
+                  <Badge
+                    colorScheme="green"
+                    px={3}
+                    py={1}
+                    borderRadius="full"
+                    fontSize="sm"
+                  >
+                    Favorito
+                  </Badge>
                 )}
               </Flex>
 
-              <Text fontSize="sm" color="gray.600">
-                <strong>No. de Cuenta:</strong> {fav.favoriteAccount?.noAccount}
+              <Text fontSize="md" color={textColor} mb={1}>
+                <Text as="span" fontWeight="semibold">
+                  No. de Cuenta:
+                </Text>{" "}
+                {fav.favoriteAccount?.noAccount}
               </Text>
-              <Text fontSize="sm" color="gray.600">
-                <strong>Tipo de Cuenta:</strong> {fav.favoriteAccount?.typeAccount}
+              <Text fontSize="md" color={textColor} mb={1}>
+                <Text as="span" fontWeight="semibold">
+                  Tipo de Cuenta:
+                </Text>{" "}
+                {fav.favoriteAccount?.typeAccount}
               </Text>
-              <Text fontSize="sm" color="gray.600">
-                <strong>ID:</strong> {fav._id}
-              </Text>
-              <Text fontSize="xs" color="gray.500">
+              <Text fontSize="sm" color="gray.500">
                 Registrado el{" "}
-                {new Date(fav.createdAt).toLocaleDateString()}
+                {format(new Date(fav.createdAt), "PPP - hh:mm a", {
+                  locale: es,
+                })}
               </Text>
 
-              <Flex mt={3} gap={2}>
+              <Flex mt={4} gap={3} direction={{ base: "column", sm: "row" }}>
                 <Button
-                  size="sm"
-                  colorScheme="teal"
+                  size="md"
+                  colorScheme={editButtonScheme}
                   leftIcon={<FaEdit />}
                   variant="outline"
                   onClick={() => handleOpenEdit(fav)}
+                  flex="1"
+                  _hover={{ bg: editButtonScheme + ".50" }}
                 >
-                  Editar
+                  Editar Alias
                 </Button>
                 <Button
-                  size="sm"
-                  colorScheme="red"
+                  size="md"
+                  colorScheme={deleteButtonScheme}
                   leftIcon={<FaTrash />}
                   variant="outline"
                   onClick={() => {
                     setSelectedFavoriteId(fav._id);
                     onDeleteOpen();
                   }}
+                  flex="1"
+                  _hover={{ bg: deleteButtonScheme + ".50" }}
                 >
                   Eliminar
                 </Button>
@@ -252,22 +339,37 @@ export const FavoritePage = () => {
         isOpen={isDeleteOpen}
         leastDestructiveRef={cancelRef}
         onClose={onDeleteClose}
+        isCentered
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+        <AlertDialogOverlay bg={modalOverlayBg}>
+          <AlertDialogContent bg={modalBg} borderRadius="xl" boxShadow="2xl">
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              color={headingColor}
+            >
               Confirmar Eliminación
             </AlertDialogHeader>
 
-            <AlertDialogBody>
-              ¿Estás seguro que deseas eliminar este favorito? Esta acción no se puede deshacer.
+            <AlertDialogBody color={textColor}>
+              ¿Estás seguro que deseas eliminar este favorito? Esta acción no se
+              puede deshacer.
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onDeleteClose}>
+              <Button
+                ref={cancelRef}
+                onClick={onDeleteClose}
+                variant="ghost"
+                colorScheme={buttonColorScheme}
+              >
                 Cancelar
               </Button>
-              <Button colorScheme="red" onClick={handleDeleteFavorite} ml={3}>
+              <Button
+                colorScheme={deleteButtonScheme}
+                onClick={handleDeleteFavorite}
+                ml={3}
+              >
                 Eliminar
               </Button>
             </AlertDialogFooter>
@@ -275,26 +377,41 @@ export const FavoritePage = () => {
         </AlertDialogOverlay>
       </AlertDialog>
 
-      <Modal isOpen={isEditOpen} onClose={onEditClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Editar Alias</ModalHeader>
-          <ModalCloseButton />
+      <Modal isOpen={isEditOpen} onClose={onEditClose} isCentered>
+        <ModalOverlay bg={modalOverlayBg} />
+        <ModalContent bg={modalBg} borderRadius="xl" boxShadow="2xl">
+          <ModalHeader color={headingColor}>Editar Alias</ModalHeader>
+          <ModalCloseButton color={textColor} />
           <ModalBody>
             <Input
               placeholder="Nuevo alias"
               value={editAliasInput}
               onChange={(e) => setEditAliasInput(e.target.value)}
+              bg={inputBg}
+              borderColor={inputBorderColor}
+              _hover={{ borderColor: editButtonScheme + ".400" }}
+              _focus={{
+                borderColor: editButtonScheme + ".500",
+                boxShadow: `0 0 0 1px ${editButtonScheme}.500`,
+              }}
+              color={textColor}
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onEditClose}>Cancelar</Button>
-            <Button colorScheme="teal" onClick={handleEditFavorite} ml={3}>
+            <Button
+              onClick={onEditClose}
+              variant="ghost"
+              colorScheme={buttonColorScheme}
+              mr={3}
+            >
+              Cancelar
+            </Button>
+            <Button colorScheme={editButtonScheme} onClick={handleEditFavorite}>
               Guardar Cambios
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </Flex>
-  )
-}
+  );
+};

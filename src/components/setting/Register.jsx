@@ -11,16 +11,26 @@ import {
     VStack,
     Heading,
     useColorModeValue,
-    SimpleGrid
+    SimpleGrid,
+    Flex, 
 } from "@chakra-ui/react";
 
 import { useRegister } from "../../shared/hooks";
 import { useNavigate } from "react-router-dom";
-import { Input } from "../setting/Input";
+import { Input } from "../setting/Input"; 
 
 export const Register = () => {
     const navigate = useNavigate();
     const { register, isLoading, isSuccess } = useRegister();
+
+    const primaryColor = useColorModeValue('purple.500', 'purple.300');
+    const accentColor = useColorModeValue('gray.800', 'gray.100');
+    const cardBg = useColorModeValue('gray.900', 'gray.700');
+    const textColor = useColorModeValue('whiteAlpha.900', 'whiteAlpha.900');
+    const inputBorderColor = useColorModeValue('gray.600', 'gray.500');
+    const inputFocusBorderColor = useColorModeValue('purple.400', 'purple.300');
+    const pageBg = useColorModeValue('gray.200', 'gray.950');
+
 
     const [formState, setFormState] = useState({
         name: { value: "", isValid: false, showError: false },
@@ -136,185 +146,361 @@ export const Register = () => {
         (formState.typeAccount.value === "EMPRESARIAL" &&
             !formState.nombreEmpresa.isValid);
 
-
-    const bgColor = useColorModeValue("white", "gray.800");
-    const formBg = useColorModeValue("gray.50", "gray.700");
-    const btnColorScheme = "blue";
+    useEffect(() => {
+        if (isSuccess) {
+            navigate('/login');
+        }
+    }, [isSuccess, navigate]);
 
     return (
-        <Box
-            maxW="600px"
-            mx="auto"
-            mt={10}
-            p={8}
-            bg={bgColor}
-            boxShadow="2xl"
-            borderRadius="lg"
-            border="1px solid"
-            borderColor={useColorModeValue("gray.200", "gray.600")}
+        <Flex
+            minH="100vh"
+            align="center"
+            justify="center"
+            bg={pageBg}
+            p={{ base: 4, md: 8 }}
         >
-            <Heading mb={6} textAlign="center" fontWeight="extrabold" size="xl">
-                Crea las nuevas cuentas 
-            </Heading>
+            <Box
+                maxW={{ base: "95%", md: "800px" }}
+                mx="auto"
+                mt={{ base: "4", md: "8" }}
+                p={{ base: "6", md: "10" }}
+                bg={cardBg}
+                boxShadow="2xl"
+                borderRadius="xl"
+                border="1px solid"
+                borderColor={useColorModeValue('gray.700', 'gray.600')}
+                color={textColor}
+                _hover={{
+                    boxShadow: "dark-lg",
+                    transform: "translateY(-5px)",
+                }}
+                transition="all 0.3s ease-in-out"
+            >
+                <Heading mb={8} textAlign="center" fontWeight="extrabold" size="xl" color={primaryColor}>
+                    Solicitar Nueva Cuenta 
+                </Heading>
 
-            <form onSubmit={handleRegister}>
-                <SimpleGrid
-                    columns={2}
-                    spacing={5}
-                    bg={formBg}
-                    p={6}
-                    borderRadius="md"
-                    boxShadow="md"
-                >
-                    <FormControl gridColumn="span 2">
-                        <FormLabel>Tipos de cuentas</FormLabel>
-                        <Select
-                            value={formState.typeAccount.value}
-                            onChange={(e) => handleInputValueChange(e.target.value, "typeAccount")}
-                            focusBorderColor={`${btnColorScheme}.500`}
-                            shadow="sm"
-                            borderRadius="md"
-                        >
-                            <option value="NORMAL">Normal</option>
-                            <option value="EMPRESARIAL">Empresarial</option>
-                        </Select>
-                    </FormControl>
+                <form onSubmit={handleRegister}>
+                    <SimpleGrid
+                        columns={{ base: 1, md: 2 }}
+                        spacing={6}
+                        p={6}
+                        borderRadius="md"
+                        bg={useColorModeValue('gray.800', 'gray.600')} 
+                        boxShadow="inner" 
+                    >
+                        <FormControl gridColumn={{ base: "span 1", md: "span 2" }}>
+                            <FormLabel fontWeight="semibold">Tipo de Cuenta</FormLabel>
+                            <Select
+                                value={formState.typeAccount.value}
+                                onChange={(e) => handleInputValueChange(e.target.value, "typeAccount")}
+                                focusBorderColor={inputFocusBorderColor}
+                                shadow="sm"
+                                borderRadius="md"
+                                size="lg"
+                                bg={useColorModeValue('gray.700', 'gray.500')}
+                                color={textColor}
+                                borderColor={inputBorderColor}
+                                _hover={{ borderColor: inputFocusBorderColor }}
+                            >
+                                <option value="NORMAL">Normal</option>
+                                <option value="EMPRESARIAL">Empresarial</option>
+                            </Select>
+                        </FormControl>
 
-                    <Input
-                        field="name"
-                        label="Nombre"
-                        value={formState.name.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.name.showError}
-                        validationMessage="Name must be at least 3 characters"
-                    />
-
-                    <Input
-                        field="username"
-                        label="Nombre Usuario"
-                        value={formState.username.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.username.showError}
-                        validationMessage="Username must be at least 3 characters"
-                    />
-
-                    {formState.typeAccount.value === "NORMAL" && (
-                        <>
-                            <Input
-                                field="dpi"
-                                label="DPI"
-                                value={formState.dpi.value}
-                                onChangeHandler={handleInputValueChange}
-                                onBlurHandler={handleInputValidationOnBlur}
-                                showErrorMessage={formState.dpi.showError}
-                                validationMessage="DPI must be 13 digits"
-                            />
-                            <Input
-                                field="work"
-                                label="Nombre de Trabajo"
-                                value={formState.work.value}
-                                onChangeHandler={handleInputValueChange}
-                                onBlurHandler={handleInputValidationOnBlur}
-                                showErrorMessage={formState.work.showError}
-                                validationMessage="Work must be at least 5 characters"
-                            />
-                        </>
-                    )}
-
-                    {formState.typeAccount.value === "EMPRESARIAL" && (
                         <Input
-                            field="nombreEmpresa"
-                            label="Company Name"
-                            value={formState.nombreEmpresa.value}
+                            field="name"
+                            label="Nombre"
+                            value={formState.name.value}
                             onChangeHandler={handleInputValueChange}
                             onBlurHandler={handleInputValidationOnBlur}
-                            showErrorMessage={formState.nombreEmpresa.showError}
-                            validationMessage="Company name must be at least 5 characters"
+                            showErrorMessage={formState.name.showError}
+                            validationMessage="El nombre debe tener al menos 3 caracteres."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
                         />
-                    )}
 
-                    <Input
-                        field="email"
-                        label="Correo"
-                        value={formState.email.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.email.showError}
-                        validationMessage="Invalid email"
-                    />
+                        <Input
+                            field="username"
+                            label="Nombre de Usuario"
+                            value={formState.username.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.username.showError}
+                            validationMessage="El nombre de usuario debe tener al menos 3 caracteres."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
 
-                    <Input
-                        field="password"
-                        label="Contraseña"
-                        type="password"
-                        value={formState.password.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.password.showError}
-                        validationMessage="Password must be at least 10 characters"
-                    />
+                        {formState.typeAccount.value === "NORMAL" && (
+                            <>
+                                <Input
+                                    field="dpi"
+                                    label="DPI"
+                                    value={formState.dpi.value}
+                                    onChangeHandler={handleInputValueChange}
+                                    onBlurHandler={handleInputValidationOnBlur}
+                                    showErrorMessage={formState.dpi.showError}
+                                    validationMessage="El DPI debe tener 13 dígitos."
+                                    inputProps={{
+                                        size: "lg",
+                                        borderColor: inputBorderColor,
+                                        _hover: { borderColor: inputFocusBorderColor },
+                                        _focus: {
+                                            borderColor: inputFocusBorderColor,
+                                            boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                        },
+                                        bg: useColorModeValue('gray.700', 'gray.600'),
+                                        color: textColor,
+                                    }}
+                                    labelProps={{ fontWeight: "semibold" }}
+                                    errorProps={{ fontSize: "sm", color: "red.300" }}
+                                />
+                                <Input
+                                    field="work"
+                                    label="Nombre de Trabajo"
+                                    value={formState.work.value}
+                                    onChangeHandler={handleInputValueChange}
+                                    onBlurHandler={handleInputValidationOnBlur}
+                                    showErrorMessage={formState.work.showError}
+                                    validationMessage="El nombre del trabajo debe tener al menos 5 caracteres."
+                                    inputProps={{
+                                        size: "lg",
+                                        borderColor: inputBorderColor,
+                                        _hover: { borderColor: inputFocusBorderColor },
+                                        _focus: {
+                                            borderColor: inputFocusBorderColor,
+                                            boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                        },
+                                        bg: useColorModeValue('gray.700', 'gray.600'),
+                                        color: textColor,
+                                    }}
+                                    labelProps={{ fontWeight: "semibold" }}
+                                    errorProps={{ fontSize: "sm", color: "red.300" }}
+                                />
+                            </>
+                        )}
 
-                    <Input
-                        field="passwordConfir"
-                        label="Confirmar contraseña"
-                        type="password"
-                        value={formState.passwordConfir.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.passwordConfir.showError}
-                        validationMessage="Passwords must match"
-                    />
+                        {formState.typeAccount.value === "EMPRESARIAL" && (
+                            <Input
+                                field="nombreEmpresa"
+                                label="Nombre de la Empresa"
+                                value={formState.nombreEmpresa.value}
+                                onChangeHandler={handleInputValueChange}
+                                onBlurHandler={handleInputValidationOnBlur}
+                                showErrorMessage={formState.nombreEmpresa.showError}
+                                validationMessage="El nombre de la empresa debe tener al menos 5 caracteres."
+                                inputProps={{
+                                    size: "lg",
+                                    borderColor: inputBorderColor,
+                                    _hover: { borderColor: inputFocusBorderColor },
+                                    _focus: {
+                                        borderColor: inputFocusBorderColor,
+                                        boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                    },
+                                    bg: useColorModeValue('gray.700', 'gray.600'),
+                                    color: textColor,
+                                }}
+                                labelProps={{ fontWeight: "semibold" }}
+                                errorProps={{ fontSize: "sm", color: "red.300" }}
+                            />
+                        )}
 
-                    <Input
-                        field="direction"
-                        label="dirección"
-                        value={formState.direction.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.direction.showError}
-                        validationMessage="Address must be at least 3 characters"
-                    />
+                        <Input
+                            field="email"
+                            label="Correo Electrónico"
+                            value={formState.email.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.email.showError}
+                            validationMessage="Correo electrónico inválido."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
 
-                    <Input
-                        field="phone"
-                        label="Telefono"
-                        value={formState.phone.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.phone.showError}
-                        validationMessage="Phone must be at least 3 digits"
-                    />
+                        <Input
+                            field="password"
+                            label="Contraseña"
+                            type="password"
+                            value={formState.password.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.password.showError}
+                            validationMessage="La contraseña debe tener al menos 10 caracteres."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
 
-                    <Input
-                        field="income"
-                        label="Ingresos"
-                        value={formState.income.value}
-                        onChangeHandler={handleInputValueChange}
-                        onBlurHandler={handleInputValidationOnBlur}
-                        showErrorMessage={formState.income.showError}
-                        validationMessage="Income must be a number"
-                    />
+                        <Input
+                            field="passwordConfir"
+                            label="Confirmar Contraseña"
+                            type="password"
+                            value={formState.passwordConfir.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.passwordConfir.showError}
+                            validationMessage="Las contraseñas no coinciden."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
 
+                        <Input
+                            field="direction"
+                            label="Dirección"
+                            value={formState.direction.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.direction.showError}
+                            validationMessage="La dirección debe tener al menos 10 caracteres."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
+
+                        <Input
+                            field="phone"
+                            label="Teléfono"
+                            value={formState.phone.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.phone.showError}
+                            validationMessage="El teléfono debe tener al menos 8 dígitos."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
+
+                        <Input
+                            field="income"
+                            label="Ingresos Mensuales"
+                            value={formState.income.value}
+                            onChangeHandler={handleInputValueChange}
+                            onBlurHandler={handleInputValidationOnBlur}
+                            showErrorMessage={formState.income.showError}
+                            validationMessage="Los ingresos deben ser un número válido."
+                            inputProps={{
+                                size: "lg",
+                                borderColor: inputBorderColor,
+                                _hover: { borderColor: inputFocusBorderColor },
+                                _focus: {
+                                    borderColor: inputFocusBorderColor,
+                                    boxShadow: `0 0 0 1px ${inputFocusBorderColor}`,
+                                },
+                                bg: useColorModeValue('gray.700', 'gray.600'),
+                                color: textColor,
+                            }}
+                            labelProps={{ fontWeight: "semibold" }}
+                            errorProps={{ fontSize: "sm", color: "red.300" }}
+                        />
+
+                        <Button
+                            type="submit"
+                            colorScheme="purple"
+                            isLoading={isLoading}
+                            isDisabled={isSubmitButtonDisabled}
+                            size="lg"
+                            w="full"
+                            borderRadius="md"
+                            _hover={{ boxShadow: "lg", transform: "translateY(-2px)" }}
+                            transition="all 0.2s ease-in-out"
+                            gridColumn={{ base: "span 1", md: "span 2" }}
+                            mt={4}
+                            fontWeight="bold"
+                        >
+                            Solicitar Cuenta
+                        </Button>
+                    </SimpleGrid>
+                </form>
+                <Text mt={6} textAlign="center" fontSize="md">
+                    ¿Ya tienes una cuenta?{" "}
                     <Button
-                        type="submit"
-                        colorScheme={btnColorScheme}
-                        isLoading={isLoading}
-                        isDisabled={isSubmitButtonDisabled} 
-                        size="lg"
-                        w="full"
-                        borderRadius="md"
-                        _hover={{ boxShadow: "lg" }}
-                        gridColumn="span 2"
+                        variant="link"
+                        colorScheme="purple"
+                        fontWeight="bold"
+                        onClick={() => navigate('/')}
+                        _hover={{ textDecoration: "underline" }}
                     >
-                        Register
+                        Iniciar Sesión
                     </Button>
-                </SimpleGrid>
-            </form>
-
-        </Box>
-    );
-};
-
-export default Register;
+                </Text>
+            </Box>
+        </Flex>
+    )
+}
+export default Register
